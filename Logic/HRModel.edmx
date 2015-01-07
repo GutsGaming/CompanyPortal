@@ -1,0 +1,586 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="HRModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="EmployeeLeaveManualAllotments">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="EmployeeID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="GivenByEmployeeID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DateTime" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EmployeeLeaveRequestDates">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmployeeLeaveRequestID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Day" Type="date" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EmployeeLeaveRequests">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="EmployeeID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DateTime" Type="datetime" Nullable="false" />
+          <Property Name="LeaveTypeID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EmployeeLeaveRequestStatusChanges">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmployeeLeaveRequestID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DateTime" Type="datetime" Nullable="false" />
+          <Property Name="ChangedByEmployeeID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="LeaveStatusID" Type="int" Nullable="false" />
+          <Property Name="Reason" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Employees">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Surname" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Email" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Salt" Type="varbinary(max)" />
+          <Property Name="Password" Type="varbinary(max)" />
+          <Property Name="SupervisorID" Type="uniqueidentifier" />
+          <Property Name="DateOfBirth" Type="date" Nullable="false" />
+          <Property Name="MobileNumber" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="IsAdmin" Type="bit" Nullable="false" />
+          <Property Name="IsDisabled" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LeaveStatuses">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Status" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LeaveTypes">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="YearlyLeave" Type="int" Nullable="false" />
+          <Property Name="IsAcquired" Type="bit" Nullable="false" />
+          <Property Name="IsInheritable" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_EmployeeLeaveManualAllotments_Employees">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="1" />
+          <End Role="EmployeeLeaveManualAllotments" Type="Self.EmployeeLeaveManualAllotments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveManualAllotments">
+              <PropertyRef Name="EmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeeLeaveManualAllotments_Employees1">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="1" />
+          <End Role="EmployeeLeaveManualAllotments" Type="Self.EmployeeLeaveManualAllotments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveManualAllotments">
+              <PropertyRef Name="GivenByEmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeeLeaveRequestDates_EmployeeLeaveRequests">
+          <End Role="EmployeeLeaveRequests" Type="Self.EmployeeLeaveRequests" Multiplicity="1" />
+          <End Role="EmployeeLeaveRequestDates" Type="Self.EmployeeLeaveRequestDates" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmployeeLeaveRequests">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveRequestDates">
+              <PropertyRef Name="EmployeeLeaveRequestID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeeLeaveRequests_Employees">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="EmployeeLeaveRequests" Type="Self.EmployeeLeaveRequests" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveRequests">
+              <PropertyRef Name="EmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeeLeaveRequests_LeaveTypes">
+          <End Role="LeaveTypes" Type="Self.LeaveTypes" Multiplicity="1" />
+          <End Role="EmployeeLeaveRequests" Type="Self.EmployeeLeaveRequests" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeaveTypes">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveRequests">
+              <PropertyRef Name="LeaveTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeeLeaveRequestStatusChanges_EmployeeLeaveRequests">
+          <End Role="EmployeeLeaveRequests" Type="Self.EmployeeLeaveRequests" Multiplicity="1" />
+          <End Role="EmployeeLeaveRequestStatusChanges" Type="Self.EmployeeLeaveRequestStatusChanges" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmployeeLeaveRequests">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveRequestStatusChanges">
+              <PropertyRef Name="EmployeeLeaveRequestID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeeLeaveRequestStatusChanges_Employees">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="1" />
+          <End Role="EmployeeLeaveRequestStatusChanges" Type="Self.EmployeeLeaveRequestStatusChanges" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveRequestStatusChanges">
+              <PropertyRef Name="ChangedByEmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeeLeaveRequestStatusChanges_LeaveStatuses">
+          <End Role="LeaveStatuses" Type="Self.LeaveStatuses" Multiplicity="1" />
+          <End Role="EmployeeLeaveRequestStatusChanges" Type="Self.EmployeeLeaveRequestStatusChanges" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeaveStatuses">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveRequestStatusChanges">
+              <PropertyRef Name="LeaveStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Employees_Employees">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="0..1" />
+          <End Role="Employees1" Type="Self.Employees" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Employees1">
+              <PropertyRef Name="SupervisorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="HRModelStoreContainer">
+          <EntitySet Name="EmployeeLeaveManualAllotments" EntityType="Self.EmployeeLeaveManualAllotments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmployeeLeaveRequestDates" EntityType="Self.EmployeeLeaveRequestDates" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmployeeLeaveRequests" EntityType="Self.EmployeeLeaveRequests" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmployeeLeaveRequestStatusChanges" EntityType="Self.EmployeeLeaveRequestStatusChanges" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Employees" EntityType="Self.Employees" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LeaveStatuses" EntityType="Self.LeaveStatuses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LeaveTypes" EntityType="Self.LeaveTypes" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_EmployeeLeaveManualAllotments_Employees" Association="Self.FK_EmployeeLeaveManualAllotments_Employees">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="EmployeeLeaveManualAllotments" EntitySet="EmployeeLeaveManualAllotments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeeLeaveManualAllotments_Employees1" Association="Self.FK_EmployeeLeaveManualAllotments_Employees1">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="EmployeeLeaveManualAllotments" EntitySet="EmployeeLeaveManualAllotments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeeLeaveRequestDates_EmployeeLeaveRequests" Association="Self.FK_EmployeeLeaveRequestDates_EmployeeLeaveRequests">
+            <End Role="EmployeeLeaveRequests" EntitySet="EmployeeLeaveRequests" />
+            <End Role="EmployeeLeaveRequestDates" EntitySet="EmployeeLeaveRequestDates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeeLeaveRequests_Employees" Association="Self.FK_EmployeeLeaveRequests_Employees">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="EmployeeLeaveRequests" EntitySet="EmployeeLeaveRequests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeeLeaveRequests_LeaveTypes" Association="Self.FK_EmployeeLeaveRequests_LeaveTypes">
+            <End Role="LeaveTypes" EntitySet="LeaveTypes" />
+            <End Role="EmployeeLeaveRequests" EntitySet="EmployeeLeaveRequests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeeLeaveRequestStatusChanges_EmployeeLeaveRequests" Association="Self.FK_EmployeeLeaveRequestStatusChanges_EmployeeLeaveRequests">
+            <End Role="EmployeeLeaveRequests" EntitySet="EmployeeLeaveRequests" />
+            <End Role="EmployeeLeaveRequestStatusChanges" EntitySet="EmployeeLeaveRequestStatusChanges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeeLeaveRequestStatusChanges_Employees" Association="Self.FK_EmployeeLeaveRequestStatusChanges_Employees">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="EmployeeLeaveRequestStatusChanges" EntitySet="EmployeeLeaveRequestStatusChanges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeeLeaveRequestStatusChanges_LeaveStatuses" Association="Self.FK_EmployeeLeaveRequestStatusChanges_LeaveStatuses">
+            <End Role="LeaveStatuses" EntitySet="LeaveStatuses" />
+            <End Role="EmployeeLeaveRequestStatusChanges" EntitySet="EmployeeLeaveRequestStatusChanges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Employees_Employees" Association="Self.FK_Employees_Employees">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="Employees1" EntitySet="Employees" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="HRModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="HREntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="EmployeeLeaveManualAllotments" EntityType="HRModel.EmployeeLeaveManualAllotment" />
+          <EntitySet Name="EmployeeLeaveRequestDates" EntityType="HRModel.EmployeeLeaveRequestDate" />
+          <EntitySet Name="EmployeeLeaveRequests" EntityType="HRModel.EmployeeLeaveRequest" />
+          <EntitySet Name="EmployeeLeaveRequestStatusChanges" EntityType="HRModel.EmployeeLeaveRequestStatusChanx" />
+          <EntitySet Name="Employees" EntityType="HRModel.Employee" />
+          <EntitySet Name="LeaveStatuses" EntityType="HRModel.LeaveStatus" />
+          <EntitySet Name="LeaveTypes" EntityType="HRModel.LeaveType" />
+          <AssociationSet Name="FK_EmployeeLeaveManualAllotments_Employees" Association="HRModel.FK_EmployeeLeaveManualAllotments_Employees">
+            <End Role="Employee" EntitySet="Employees" />
+            <End Role="EmployeeLeaveManualAllotment" EntitySet="EmployeeLeaveManualAllotments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeeLeaveManualAllotments_Employees1" Association="HRModel.FK_EmployeeLeaveManualAllotments_Employees1">
+            <End Role="Employee" EntitySet="Employees" />
+            <End Role="EmployeeLeaveManualAllotment" EntitySet="EmployeeLeaveManualAllotments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeeLeaveRequestDates_EmployeeLeaveRequests" Association="HRModel.FK_EmployeeLeaveRequestDates_EmployeeLeaveRequests">
+            <End Role="EmployeeLeaveRequest" EntitySet="EmployeeLeaveRequests" />
+            <End Role="EmployeeLeaveRequestDate" EntitySet="EmployeeLeaveRequestDates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeeLeaveRequests_Employees" Association="HRModel.FK_EmployeeLeaveRequests_Employees">
+            <End Role="Employee" EntitySet="Employees" />
+            <End Role="EmployeeLeaveRequest" EntitySet="EmployeeLeaveRequests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeeLeaveRequests_LeaveTypes" Association="HRModel.FK_EmployeeLeaveRequests_LeaveTypes">
+            <End Role="LeaveType" EntitySet="LeaveTypes" />
+            <End Role="EmployeeLeaveRequest" EntitySet="EmployeeLeaveRequests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeeLeaveRequestStatusChanges_EmployeeLeaveRequests" Association="HRModel.FK_EmployeeLeaveRequestStatusChanges_EmployeeLeaveRequests">
+            <End Role="EmployeeLeaveRequest" EntitySet="EmployeeLeaveRequests" />
+            <End Role="EmployeeLeaveRequestStatusChanx" EntitySet="EmployeeLeaveRequestStatusChanges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeeLeaveRequestStatusChanges_Employees" Association="HRModel.FK_EmployeeLeaveRequestStatusChanges_Employees">
+            <End Role="Employee" EntitySet="Employees" />
+            <End Role="EmployeeLeaveRequestStatusChanx" EntitySet="EmployeeLeaveRequestStatusChanges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeeLeaveRequestStatusChanges_LeaveStatuses" Association="HRModel.FK_EmployeeLeaveRequestStatusChanges_LeaveStatuses">
+            <End Role="LeaveStatus" EntitySet="LeaveStatuses" />
+            <End Role="EmployeeLeaveRequestStatusChanx" EntitySet="EmployeeLeaveRequestStatusChanges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Employees_Employees" Association="HRModel.FK_Employees_Employees">
+            <End Role="Employee" EntitySet="Employees" />
+            <End Role="Employee1" EntitySet="Employees" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="EmployeeLeaveManualAllotment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="EmployeeID" Type="Guid" Nullable="false" />
+          <Property Name="GivenByEmployeeID" Type="Guid" Nullable="false" />
+          <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Employee" Relationship="HRModel.FK_EmployeeLeaveManualAllotments_Employees" FromRole="EmployeeLeaveManualAllotment" ToRole="Employee" />
+          <NavigationProperty Name="Employee1" Relationship="HRModel.FK_EmployeeLeaveManualAllotments_Employees1" FromRole="EmployeeLeaveManualAllotment" ToRole="Employee" />
+        </EntityType>
+        <EntityType Name="EmployeeLeaveRequestDate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeLeaveRequestID" Type="Guid" Nullable="false" />
+          <Property Name="Day" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="EmployeeLeaveRequest" Relationship="HRModel.FK_EmployeeLeaveRequestDates_EmployeeLeaveRequests" FromRole="EmployeeLeaveRequestDate" ToRole="EmployeeLeaveRequest" />
+        </EntityType>
+        <EntityType Name="EmployeeLeaveRequest">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="EmployeeID" Type="Guid" Nullable="false" />
+          <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LeaveTypeID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EmployeeLeaveRequestDates" Relationship="HRModel.FK_EmployeeLeaveRequestDates_EmployeeLeaveRequests" FromRole="EmployeeLeaveRequest" ToRole="EmployeeLeaveRequestDate" />
+          <NavigationProperty Name="Employee" Relationship="HRModel.FK_EmployeeLeaveRequests_Employees" FromRole="EmployeeLeaveRequest" ToRole="Employee" />
+          <NavigationProperty Name="LeaveType" Relationship="HRModel.FK_EmployeeLeaveRequests_LeaveTypes" FromRole="EmployeeLeaveRequest" ToRole="LeaveType" />
+          <NavigationProperty Name="EmployeeLeaveRequestStatusChanges" Relationship="HRModel.FK_EmployeeLeaveRequestStatusChanges_EmployeeLeaveRequests" FromRole="EmployeeLeaveRequest" ToRole="EmployeeLeaveRequestStatusChanx" />
+        </EntityType>
+        <EntityType Name="EmployeeLeaveRequestStatusChanx">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeLeaveRequestID" Type="Guid" Nullable="false" />
+          <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ChangedByEmployeeID" Type="Guid" Nullable="false" />
+          <Property Name="LeaveStatusID" Type="Int32" Nullable="false" />
+          <Property Name="Reason" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EmployeeLeaveRequest" Relationship="HRModel.FK_EmployeeLeaveRequestStatusChanges_EmployeeLeaveRequests" FromRole="EmployeeLeaveRequestStatusChanx" ToRole="EmployeeLeaveRequest" />
+          <NavigationProperty Name="Employee" Relationship="HRModel.FK_EmployeeLeaveRequestStatusChanges_Employees" FromRole="EmployeeLeaveRequestStatusChanx" ToRole="Employee" />
+          <NavigationProperty Name="LeaveStatus" Relationship="HRModel.FK_EmployeeLeaveRequestStatusChanges_LeaveStatuses" FromRole="EmployeeLeaveRequestStatusChanx" ToRole="LeaveStatus" />
+        </EntityType>
+        <EntityType Name="Employee">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Surname" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Salt" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Password" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="SupervisorID" Type="Guid" />
+          <Property Name="DateOfBirth" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="MobileNumber" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
+          <Property Name="IsDisabled" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="EmployeeLeaveManualAllotments" Relationship="HRModel.FK_EmployeeLeaveManualAllotments_Employees" FromRole="Employee" ToRole="EmployeeLeaveManualAllotment" />
+          <NavigationProperty Name="EmployeeLeaveManualAllotments1" Relationship="HRModel.FK_EmployeeLeaveManualAllotments_Employees1" FromRole="Employee" ToRole="EmployeeLeaveManualAllotment" />
+          <NavigationProperty Name="EmployeeLeaveRequests" Relationship="HRModel.FK_EmployeeLeaveRequests_Employees" FromRole="Employee" ToRole="EmployeeLeaveRequest" />
+          <NavigationProperty Name="EmployeeLeaveRequestStatusChanges" Relationship="HRModel.FK_EmployeeLeaveRequestStatusChanges_Employees" FromRole="Employee" ToRole="EmployeeLeaveRequestStatusChanx" />
+          <NavigationProperty Name="Subordinates" Relationship="HRModel.FK_Employees_Employees" FromRole="Employee" ToRole="Employee1" />
+          <NavigationProperty Name="Supervisor" Relationship="HRModel.FK_Employees_Employees" FromRole="Employee1" ToRole="Employee" />
+        </EntityType>
+        <EntityType Name="LeaveStatus">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EmployeeLeaveRequestStatusChanges" Relationship="HRModel.FK_EmployeeLeaveRequestStatusChanges_LeaveStatuses" FromRole="LeaveStatus" ToRole="EmployeeLeaveRequestStatusChanx" />
+        </EntityType>
+        <EntityType Name="LeaveType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="YearlyLeave" Type="Int32" Nullable="false" />
+          <Property Name="IsAcquired" Type="Boolean" Nullable="false" />
+          <Property Name="IsInheritable" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="EmployeeLeaveRequests" Relationship="HRModel.FK_EmployeeLeaveRequests_LeaveTypes" FromRole="LeaveType" ToRole="EmployeeLeaveRequest" />
+        </EntityType>
+        <Association Name="FK_EmployeeLeaveManualAllotments_Employees">
+          <End Type="HRModel.Employee" Role="Employee" Multiplicity="1" />
+          <End Type="HRModel.EmployeeLeaveManualAllotment" Role="EmployeeLeaveManualAllotment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveManualAllotment">
+              <PropertyRef Name="EmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeeLeaveManualAllotments_Employees1">
+          <End Type="HRModel.Employee" Role="Employee" Multiplicity="1" />
+          <End Type="HRModel.EmployeeLeaveManualAllotment" Role="EmployeeLeaveManualAllotment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveManualAllotment">
+              <PropertyRef Name="GivenByEmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeeLeaveRequestDates_EmployeeLeaveRequests">
+          <End Type="HRModel.EmployeeLeaveRequest" Role="EmployeeLeaveRequest" Multiplicity="1" />
+          <End Type="HRModel.EmployeeLeaveRequestDate" Role="EmployeeLeaveRequestDate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmployeeLeaveRequest">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveRequestDate">
+              <PropertyRef Name="EmployeeLeaveRequestID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeeLeaveRequests_Employees">
+          <End Type="HRModel.Employee" Role="Employee" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="HRModel.EmployeeLeaveRequest" Role="EmployeeLeaveRequest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveRequest">
+              <PropertyRef Name="EmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeeLeaveRequests_LeaveTypes">
+          <End Type="HRModel.LeaveType" Role="LeaveType" Multiplicity="1" />
+          <End Type="HRModel.EmployeeLeaveRequest" Role="EmployeeLeaveRequest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeaveType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveRequest">
+              <PropertyRef Name="LeaveTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeeLeaveRequestStatusChanges_EmployeeLeaveRequests">
+          <End Type="HRModel.EmployeeLeaveRequest" Role="EmployeeLeaveRequest" Multiplicity="1" />
+          <End Type="HRModel.EmployeeLeaveRequestStatusChanx" Role="EmployeeLeaveRequestStatusChanx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmployeeLeaveRequest">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveRequestStatusChanx">
+              <PropertyRef Name="EmployeeLeaveRequestID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeeLeaveRequestStatusChanges_Employees">
+          <End Type="HRModel.Employee" Role="Employee" Multiplicity="1" />
+          <End Type="HRModel.EmployeeLeaveRequestStatusChanx" Role="EmployeeLeaveRequestStatusChanx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveRequestStatusChanx">
+              <PropertyRef Name="ChangedByEmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeeLeaveRequestStatusChanges_LeaveStatuses">
+          <End Type="HRModel.LeaveStatus" Role="LeaveStatus" Multiplicity="1" />
+          <End Type="HRModel.EmployeeLeaveRequestStatusChanx" Role="EmployeeLeaveRequestStatusChanx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeaveStatus">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveRequestStatusChanx">
+              <PropertyRef Name="LeaveStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Employees_Employees">
+          <End Type="HRModel.Employee" Role="Employee" Multiplicity="0..1" />
+          <End Type="HRModel.Employee" Role="Employee1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Employee1">
+              <PropertyRef Name="SupervisorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="HRModelStoreContainer" CdmEntityContainer="HREntities">
+          <EntitySetMapping Name="EmployeeLeaveManualAllotments">
+            <EntityTypeMapping TypeName="HRModel.EmployeeLeaveManualAllotment">
+              <MappingFragment StoreEntitySet="EmployeeLeaveManualAllotments">
+                <ScalarProperty Name="DateTime" ColumnName="DateTime" />
+                <ScalarProperty Name="GivenByEmployeeID" ColumnName="GivenByEmployeeID" />
+                <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmployeeLeaveRequestDates">
+            <EntityTypeMapping TypeName="HRModel.EmployeeLeaveRequestDate">
+              <MappingFragment StoreEntitySet="EmployeeLeaveRequestDates">
+                <ScalarProperty Name="Day" ColumnName="Day" />
+                <ScalarProperty Name="EmployeeLeaveRequestID" ColumnName="EmployeeLeaveRequestID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmployeeLeaveRequests">
+            <EntityTypeMapping TypeName="HRModel.EmployeeLeaveRequest">
+              <MappingFragment StoreEntitySet="EmployeeLeaveRequests">
+                <ScalarProperty Name="LeaveTypeID" ColumnName="LeaveTypeID" />
+                <ScalarProperty Name="DateTime" ColumnName="DateTime" />
+                <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmployeeLeaveRequestStatusChanges">
+            <EntityTypeMapping TypeName="HRModel.EmployeeLeaveRequestStatusChanx">
+              <MappingFragment StoreEntitySet="EmployeeLeaveRequestStatusChanges">
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="LeaveStatusID" ColumnName="LeaveStatusID" />
+                <ScalarProperty Name="ChangedByEmployeeID" ColumnName="ChangedByEmployeeID" />
+                <ScalarProperty Name="DateTime" ColumnName="DateTime" />
+                <ScalarProperty Name="EmployeeLeaveRequestID" ColumnName="EmployeeLeaveRequestID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Employees">
+            <EntityTypeMapping TypeName="HRModel.Employee">
+              <MappingFragment StoreEntitySet="Employees">
+                <ScalarProperty Name="IsDisabled" ColumnName="IsDisabled" />
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="MobileNumber" ColumnName="MobileNumber" />
+                <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+                <ScalarProperty Name="SupervisorID" ColumnName="SupervisorID" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Salt" ColumnName="Salt" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Surname" ColumnName="Surname" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LeaveStatuses">
+            <EntityTypeMapping TypeName="HRModel.LeaveStatus">
+              <MappingFragment StoreEntitySet="LeaveStatuses">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LeaveTypes">
+            <EntityTypeMapping TypeName="HRModel.LeaveType">
+              <MappingFragment StoreEntitySet="LeaveTypes">
+                <ScalarProperty Name="IsInheritable" ColumnName="IsInheritable" />
+                <ScalarProperty Name="IsAcquired" ColumnName="IsAcquired" />
+                <ScalarProperty Name="YearlyLeave" ColumnName="YearlyLeave" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

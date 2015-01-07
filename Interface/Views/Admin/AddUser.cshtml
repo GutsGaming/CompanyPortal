@@ -1,0 +1,60 @@
+﻿@model Interface.Models.AddUserModel
+
+
+@{
+    ViewBag.Title = "Add New User";
+    Layout = "~/Views/_LoggedIn.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <form role="form" method="POST">
+            <h2>Add New User</h2>
+            <hr>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="form-group">
+                        <input type="text" autofocus name="Name" id="Name" class="form-control input-lg" placeholder="Name" tabindex="1">
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="form-group">
+                        <input type="text" name="Surname" id="Surname" class="form-control input-lg" placeholder="Surname" tabindex="2">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="email" name="Email" id="Email" class="form-control input-lg" placeholder="Email Address" tabindex="3">
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <select name="SupervisorID" class="form-control" tabindex="4">
+                            <option value="">No Supervisor</option>
+                            @foreach (var supervisor in Model.Supervisors)
+                            {
+                                <option value="@supervisor.ID">@supervisor.Name @supervisor.Surname</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <input type="date" name="Dateofbirth" id="Dateofbirth" class="form-control input-lg" placeholder="Date Of Birth" tabindex="5">
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <input type="number" name="MobileNumber" id="MobileNumber" class="form-control input-lg" placeholder="Mobile Number" tabindex="6">
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <div class="row">
+                <div class="col-xs-12 col-md-12"><input type="submit" value="Register" class="btn btn-primary btn-block btn-lg" tabindex="7"></div>
+            </div>
+        </form>
+    </div>
+</div>

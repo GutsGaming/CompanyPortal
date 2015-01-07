@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="a3f7a4417b794f77b9b77d5446735415" Name="Diagram1">
+        <EntityTypeShape EntityType="HRModel.EmployeeLeaveManualAllotment" Width="1.5" PointX="3" PointY="8" />
+        <EntityTypeShape EntityType="HRModel.EmployeeLeaveRequestDate" Width="1.5" PointX="5.25" PointY="8.5" />
+        <EntityTypeShape EntityType="HRModel.EmployeeLeaveRequest" Width="1.5" PointX="3" PointY="4.5" />
+        <EntityTypeShape EntityType="HRModel.EmployeeLeaveRequestStatusChanx" Width="1.5" PointX="5.25" PointY="4.5" />
+        <EntityTypeShape EntityType="HRModel.Employee" Width="1.5" PointX="0.75" PointY="3.75" />
+        <EntityTypeShape EntityType="HRModel.LeaveStatus" Width="1.5" PointX="3" PointY="2" />
+        <EntityTypeShape EntityType="HRModel.LeaveType" Width="1.5" PointX="0.75" PointY="0.75" />
+        <AssociationConnector Association="HRModel.FK_EmployeeLeaveManualAllotments_Employees" />
+        <AssociationConnector Association="HRModel.FK_EmployeeLeaveManualAllotments_Employees1" />
+        <AssociationConnector Association="HRModel.FK_EmployeeLeaveRequestDates_EmployeeLeaveRequests" />
+        <AssociationConnector Association="HRModel.FK_EmployeeLeaveRequests_Employees" />
+        <AssociationConnector Association="HRModel.FK_EmployeeLeaveRequests_LeaveTypes" />
+        <AssociationConnector Association="HRModel.FK_EmployeeLeaveRequestStatusChanges_EmployeeLeaveRequests" />
+        <AssociationConnector Association="HRModel.FK_EmployeeLeaveRequestStatusChanges_Employees" />
+        <AssociationConnector Association="HRModel.FK_EmployeeLeaveRequestStatusChanges_LeaveStatuses" />
+        <AssociationConnector Association="HRModel.FK_Employees_Employees" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
