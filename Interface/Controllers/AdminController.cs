@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Linq;
+using System.Net.Mail;
+using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.Routing;
 using Interface.Models;
 using Logic;
-using System.Threading.Tasks;
 
 namespace Interface.Controllers
 {
@@ -18,7 +19,7 @@ namespace Interface.Controllers
 
         public ActionResult AddUser()
         {
-            return View(new AddUserModel {Supervisors = hrEntities.Employees});
+            return View(new AddUserModel { Supervisors = hrEntities.Employees });
         }
 
         [HttpPost]
@@ -27,7 +28,21 @@ namespace Interface.Controllers
             employee.ID = Guid.NewGuid();
 
             hrEntities.Employees.Add(employee);
-            await hrEntities.SaveChangesAsync();
+            Task<int> saveUser = hrEntities.SaveChangesAsync();
+
+            string passwordLink = Url.Action("Register", "User", new RouteValueDictionary() { { "id", employee.ID } },
+                this.Request.Url.Scheme);
+
+            await
+                AppSettings.SmtpClient.SendMailAsync(new MailMessage(AppSettings.DefaultMailAddress,
+                    new MailAddress(employee.Email, employee.Name + employee.Surname))
+                {
+                    Subject = "Welcome to the " + AppSettings.CompanyName + " HRM",
+                    IsBodyHtml = true,
+                    Body = "<h1>Hello " + employee.Name + "!</h1>You have been invited to join the " + AppSettings.CompanyName + " HRM. Please click this link to create a password: <a href='" + passwordLink + "'>" + passwordLink + "</a>"
+                });
+
+            await saveUser;
             return RedirectToAction("Users");
         }
     }

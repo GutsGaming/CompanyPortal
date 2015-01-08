@@ -131,6 +131,7 @@
     <Content Include="Views\Dashboard\Index.cshtml" />
     <Content Include="Views\Admin\AddUser.cshtml" />
     <Content Include="Views\User\Register.cshtml" />
+    <Content Include="Web.config.example" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
