@@ -12,17 +12,20 @@ namespace Interface.Controllers
     {
         private readonly HREntities hrEntities = new HREntities();
 
+        [NeedsAdmin]
         public ActionResult Users()
         {
             return View();
         }
 
+        [NeedsAdmin]
         public ActionResult AddUser()
         {
             return View(new AddUserModel { Supervisors = hrEntities.Employees });
         }
 
         [HttpPost]
+        [NeedsAdmin]
         public async Task<ActionResult> AddUser(Employee employee)
         {
             employee.ID = Guid.NewGuid();
@@ -37,9 +40,9 @@ namespace Interface.Controllers
                 AppSettings.SmtpClient.SendMailAsync(new MailMessage(AppSettings.DefaultMailAddress,
                     new MailAddress(employee.Email, employee.Name + employee.Surname))
                 {
-                    Subject = "Welcome to the " + AppSettings.CompanyName + " HRM",
+                    Subject = "Welcome to the " + AppSettings.CompanyName + " Company Portal",
                     IsBodyHtml = true,
-                    Body = "<h1>Hello " + employee.Name + "!</h1>You have been invited to join the " + AppSettings.CompanyName + " HRM. Please click this link to create a password: <a href='" + passwordLink + "'>" + passwordLink + "</a>"
+                    Body = "<h1>Hello " + employee.Name + "!</h1>You have been invited to join the " + AppSettings.CompanyName + " Company Portal. Please click this link to create a password: <a href='" + passwordLink + "'>" + passwordLink + "</a>"
                 });
 
             await saveUser;

@@ -8,7 +8,7 @@ namespace Interface.Controllers
 {
     public class DashboardController : Controller
     {
-        // GET: User
+        [NeedsLogin]
         public ActionResult Index()
         {
             return View();

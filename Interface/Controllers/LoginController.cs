@@ -28,6 +28,8 @@ namespace Interface.Controllers
                 if (employee.Password.SequenceEqual(triedPassword))
                 {
                     Session.Add("EmployeeID", employee.ID);
+                    Session.Add("IsAdmin", employee.IsAdmin);
+                    Session.Add("Name", employee.Name);
                     return RedirectToAction("Index", "Dashboard");                    
                 }
                 else
