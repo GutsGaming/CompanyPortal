@@ -5,7 +5,11 @@
 @section Styles
 {
     <link href="~/Content/Style.min.css" rel="stylesheet" />
+    @RenderSection("Styles", false)
 }
+
+@RenderSection("Scripts", false)
+
 
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -16,7 +20,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="@Url.Action("Index","Dashboard")">@Logic.AppSettings.CompanyName</a>
+            <a class="navbar-brand" href="@Url.Action("Index","Dashboard")">@Logic.AppSettings.CompanyName Intranet</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
@@ -24,7 +28,7 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Leave <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">Book Leave</a></li>
+                        <li><a href="@Url.Action("Book", "Leave")">Book Leave</a></li>
                         <li><a href="#">View Leave</a></li>
                         <li><a href="#">Leave Calendar</a></li>
                     </ul>

@@ -102,17 +102,30 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\datepicker3.css" />
+    <Content Include="Content\datepicker3.min.css">
+      <DependentUpon>datepicker3.css</DependentUpon>
+    </Content>
     <Content Include="Content\Style.css" />
     <Content Include="Content\Style.min.css">
       <DependentUpon>Style.css</DependentUpon>
     </Content>
     <Content Include="Global.asax" />
+    <Content Include="Scripts\bootstrap-datepicker.js" />
+    <Content Include="Scripts\bootstrap-datepicker.min.js">
+      <DependentUpon>bootstrap-datepicker.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js">
+      <DependentUpon>moment.js</DependentUpon>
+    </Content>
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\LeaveController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\NeedsLogin.cs" />
@@ -134,6 +147,14 @@
     <Content Include="Views\Admin\AddUser.cshtml" />
     <Content Include="Views\User\Register.cshtml" />
     <Content Include="Web.config.example" />
+    <Content Include="Views\Leave\Book.cshtml" />
+    <None Include="Properties\PublishProfiles\Local.pubxml" />
+    <Content Include="Scripts\bootstrap-datepicker.min.js.map">
+      <DependentUpon>bootstrap-datepicker.min.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\moment.min.js.map">
+      <DependentUpon>moment.min.js</DependentUpon>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

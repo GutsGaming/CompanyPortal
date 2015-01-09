@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "Book Leave";
+    Layout = "~/Views/_LoggedIn.cshtml";
+}
+
+@section Styles
+{
+    <link href="~/Content/datepicker3.min.css" rel="stylesheet" />
+}
+
+@section Scripts
+{
+    <script src="~/Scripts/bootstrap-datepicker.min.js"></script>
+    <script src="~/Scripts/moment.min.js"></script>
+
+    <script>
+
+        var model = new function() {
+            var that = this;
+
+            this.selectedDates = ko.observableArray();
+        };
+
+
+        $(document).ready(function() {
+
+            ko.applyBindings(model);
+
+            $('#datePicker').datepicker({
+                todayBtn: true,
+                clearBtn: true,
+                multidate: true,
+                todayHighlight: true,
+                startDate: new Date(),
+                startView: 1
+            }).on('changeDate', function(e) {
+                model.selectedDates.valueWillMutate();
+                model.selectedDates.removeAll();
+                ko.utils.arrayPushAll(model.selectedDates, e.dates);
+                model.selectedDates.valueHasMutated();
+            });
+        });
+    </script>
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">Choose your Leave Dates</div>
+            <div class="panel-body">
+                <div id="datePicker"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">Choose Leave Type</div>
+            <div class="panel-body">
+                <ul data-bind="foreach: selectedDates">
+                    <li><span data-bind="text: moment($data).format('dddd, MMMM Do YYYY')"></span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
