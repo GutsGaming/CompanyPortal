@@ -32,7 +32,7 @@ namespace Interface.Controllers
         [HttpPost]
         public async Task<ActionResult> Register(Guid id, string password)
         {
-            var employee = hrEntities.Employees.SingleOrDefault(
+            Employee employee = hrEntities.Employees.SingleOrDefault(
                 e => e.ID == id && e.Password == null);
 
             employee.Salt = Security.GenerateSalt();

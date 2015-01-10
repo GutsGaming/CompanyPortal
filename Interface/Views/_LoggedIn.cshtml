@@ -1,4 +1,5 @@
-﻿@{
+﻿@using Logic
+@{
     Layout = "~/Views/_Layout.cshtml";
 }
 
@@ -20,11 +21,11 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="@Url.Action("Index","Dashboard")">@Logic.AppSettings.CompanyName Intranet</a>
+            <a class="navbar-brand" href="@Url.Action("Index", "Dashboard")">@AppSettings.CompanyName Intranet</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="@Url.Action("Index","Dashboard")">Dashboard</a></li>
+                <li><a href="@Url.Action("Index", "Dashboard")">Dashboard</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Leave <b class="caret"></b></a>
                     <ul class="dropdown-menu">

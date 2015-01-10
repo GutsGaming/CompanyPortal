@@ -21,7 +21,7 @@ namespace Interface.Controllers
         [NeedsAdmin]
         public ActionResult AddUser()
         {
-            return View(new AddUserModel { Supervisors = hrEntities.Employees });
+            return View(new AddUserModel {Supervisors = hrEntities.Employees});
         }
 
         [HttpPost]
@@ -33,8 +33,8 @@ namespace Interface.Controllers
             hrEntities.Employees.Add(employee);
             Task<int> saveUser = hrEntities.SaveChangesAsync();
 
-            string passwordLink = Url.Action("Register", "User", new RouteValueDictionary() { { "id", employee.ID } },
-                this.Request.Url.Scheme);
+            string passwordLink = Url.Action("Register", "User", new RouteValueDictionary {{"id", employee.ID}},
+                Request.Url.Scheme);
 
             await
                 AppSettings.SmtpClient.SendMailAsync(new MailMessage(AppSettings.DefaultMailAddress,
@@ -42,7 +42,11 @@ namespace Interface.Controllers
                 {
                     Subject = "Welcome to the " + AppSettings.CompanyName + " Company Portal",
                     IsBodyHtml = true,
-                    Body = "<h1>Hello " + employee.Name + "!</h1>You have been invited to join the " + AppSettings.CompanyName + " Company Portal. Please click this link to create a password: <a href='" + passwordLink + "'>" + passwordLink + "</a>"
+                    Body =
+                        "<h1>Hello " + employee.Name + "!</h1>You have been invited to join the " +
+                        AppSettings.CompanyName +
+                        " Company Portal. Please click this link to create a password: <a href='" + passwordLink + "'>" +
+                        passwordLink + "</a>"
                 });
 
             await saveUser;

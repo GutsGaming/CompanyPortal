@@ -18,7 +18,8 @@ namespace Interface.Controllers
 
             filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary
             {
-                {"controller", "Login"}
+                {"controller", "Login"},
+                {"redirectURL", filterContext.HttpContext.Request.Url.PathAndQuery}
             });
         }
     }

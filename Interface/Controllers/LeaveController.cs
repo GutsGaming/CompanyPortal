@@ -1,10 +1,15 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Linq;
+using System.Web.Mvc;
+using Interface.Models;
+using Logic;
 
 namespace Interface.Controllers
 {
     public class LeaveController : Controller
     {
-        // GET: Leave
+        private readonly HREntities hrEntities = new HREntities();
+
         public ActionResult Index()
         {
             return View();
@@ -13,7 +18,13 @@ namespace Interface.Controllers
         [NeedsLogin]
         public ActionResult Book()
         {
-            return View();
+            var userID = new Guid(Session["EmployeeID"].ToString());
+            var bookLeaveModel = new BookLeaveModel
+            {
+                LeaveTypes = hrEntities.LeaveTypes,
+                CurrentUser = hrEntities.Employees.SingleOrDefault(e => e.ID == userID)
+            };
+            return View(bookLeaveModel);
         }
     }
 }

@@ -2,7 +2,8 @@
     ViewBag.Title = "Book Leave";
     Layout = "~/Views/_LoggedIn.cshtml";
 }
-
+@using Logic
+@model Interface.Models.BookLeaveModel
 @section Styles
 {
     <link href="~/Content/datepicker3.min.css" rel="stylesheet" />
@@ -19,8 +20,30 @@
             var that = this;
 
             this.selectedDates = ko.observableArray();
+            this.leaveType = ko.observable('1');
+
+            this.totalFullDays = ko.computed(function() {
+                return ko.utils.arrayFilter(that.selectedDates(), function(item) {
+                    return item.IsFullDay() == true;
+                }).length;
+            });
+
+            this.totalHalfDays = ko.computed(function() {
+                return ko.utils.arrayFilter(that.selectedDates(), function(item) {
+                    return item.IsFullDay() == false;
+                }).length;
+            });
         };
 
+        function leaveTypeToText(leaveType) {
+            switch (leaveType) {
+                @foreach (LeaveType leaveType in Model.LeaveTypes)
+                {
+                    @:case '@leaveType.ID':
+                    @:return '@leaveType.Name';
+                }
+            }
+        }
 
         $(document).ready(function() {
 
@@ -34,10 +57,13 @@
                 startDate: new Date(),
                 startView: 1
             }).on('changeDate', function(e) {
-                model.selectedDates.valueWillMutate();
                 model.selectedDates.removeAll();
-                ko.utils.arrayPushAll(model.selectedDates, e.dates);
-                model.selectedDates.valueHasMutated();
+                for (dateIndex in e.dates) {
+                    model.selectedDates.push({
+                        Date: e.dates[dateIndex],
+                        IsFullDay: ko.observable("1")
+                    });
+                }
             });
         });
     </script>
@@ -52,13 +78,57 @@
             </div>
         </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-heading">Choose Leave Type</div>
             <div class="panel-body">
                 <ul data-bind="foreach: selectedDates">
-                    <li><span data-bind="text: moment($data).format('dddd, MMMM Do YYYY')"></span></li>
+                    <li>
+                        <span data-bind="text: moment(Date).format('dddd, MMMM Do YYYY')"></span>
+                        <div class="btn-group hideRadios">
+                            <label class="btn btn-primary" data-bind="css: {active: IsFullDay()=='1'}">
+                                <input type="radio" autocomplete="off" value="1" data-bind="attr: {name: 'dayType' + $index()}, checked: IsFullDay"> Full Day
+                            </label>
+                            <label class="btn btn-primary" data-bind="css: {active: IsFullDay()=='0'}">
+                                <input type="radio" name="options" autocomplete="off" value="0" data-bind="attr: {name: 'dayType' + $index()}, checked: IsFullDay"> Half Day
+                            </label>
+                        </div>
+                    </li>
                 </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">Confirm</div>
+            <div class="panel-body">
+                <div>
+                    You are taking
+                    <span data-bind="visible: totalFullDays()>0">
+                        <span data-bind="text: totalFullDays"></span> full day<span data-bind="visible: totalFullDays()>1">s</span>
+                    </span>
+                    <span data-bind="visible: totalFullDays()>0 && totalHalfDays()>0"> and </span>
+                    <span data-bind="visible: totalHalfDays()>0">
+                        <span data-bind="text: totalHalfDays"></span> half day<span data-bind="visible: totalHalfDays()>1">s</span>
+                    </span> from your
+                    <div class="btn-group btn-group-xs hideRadios">
+                        @foreach (LeaveType leaveType in Model.LeaveTypes)
+                        {
+                            <label class="btn btn-default" data-bind="css: {active: leaveType()=='@leaveType.ID'}" style="text-transform: lowercase">
+                                <input type="radio" name="leaveType" autocomplete="off" value="@leaveType.ID" data-bind="checked: leaveType"> @leaveType.Name
+                            </label>
+                        }
+                    </div> leave. This leaves you with days of <span data-bind="text: leaveTypeToText(leaveType())" style="text-transform: lowercase"></span> leave.
+                    @if (Model.CurrentUser.Supervisor != null)
+                    {
+                        @:Your leave needs to be approved by @Model.CurrentUser.Supervisor.Name @Model.CurrentUser.Supervisor.Surname.
+                    }
+                    else
+                    {
+                        @:Your leave is automatically approved.
+                    }
+                </div>
+                <button data-bind="visible: totalFullDays()>0 || totalHalfDays()>0" type="button" class="btn btn-success btn-lg btn-block">Apply for Leave</button>
             </div>
         </div>
     </div>

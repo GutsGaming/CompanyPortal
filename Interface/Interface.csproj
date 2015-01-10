@@ -128,13 +128,14 @@
     <Compile Include="Controllers\LeaveController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
-    <Compile Include="Controllers\NeedsLogin.cs" />
+    <Compile Include="Controllers\NeedsLoginAttribute.cs" />
     <Compile Include="Controllers\NeedsAdminAttribute.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AddUserModel.cs" />
+    <Compile Include="Models\BookLeaveModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

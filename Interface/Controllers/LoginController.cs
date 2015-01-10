@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Logic;
 
@@ -9,7 +7,7 @@ namespace Interface.Controllers
 {
     public class LoginController : Controller
     {
-        private HREntities hrEntities = new HREntities();
+        private readonly HREntities hrEntities = new HREntities();
         // GET: Login
         public ActionResult Index()
         {
@@ -17,30 +15,27 @@ namespace Interface.Controllers
         }
 
         [HttpPost]
-        public ActionResult Index(string email, string password)
+        public ActionResult Index(string email, string password, string redirectURL)
         {
-            var employee = hrEntities.Employees.SingleOrDefault(e => e.Email.Equals(email));
+            Employee employee = hrEntities.Employees.SingleOrDefault(e => e.Email.Equals(email));
             if (employee != null)
             {
-                var triedPassword = Security.Hash(password, employee.Salt);
-                var userPassword = employee.Password;
+                byte[] triedPassword = Security.Hash(password, employee.Salt);
+                byte[] userPassword = employee.Password;
 
                 if (employee.Password.SequenceEqual(triedPassword))
                 {
                     Session.Add("EmployeeID", employee.ID);
                     Session.Add("IsAdmin", employee.IsAdmin);
                     Session.Add("Name", employee.Name);
-                    return RedirectToAction("Index", "Dashboard");                    
+
+                    if (String.IsNullOrEmpty(redirectURL))
+                        return RedirectToAction("Index", "Dashboard");
+                    return Redirect(redirectURL);
                 }
-                else
-                {
-                    return RedirectToAction("Index");
-                }
+                return RedirectToAction("Index");
             }
-            else
-            {
-                return RedirectToAction("Index");                
-            }
+            return RedirectToAction("Index");
         }
     }
 }
