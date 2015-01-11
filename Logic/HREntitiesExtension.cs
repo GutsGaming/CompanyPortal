@@ -16,22 +16,22 @@ namespace Logic
     {
         public IEnumerable<LeaveTypeAmount> GetRemainingLeave(Employee e)
         {
-            IQueryable<LeaveTypeAmount> startingLeave = LeaveTypes.Select(lt => new LeaveTypeAmount
+            List<LeaveTypeAmount> startingLeave = LeaveTypes.Select(lt => new LeaveTypeAmount
             {
                 LeaveType = lt,
                 Days = (lt.IsInheritable
                     ? ((DateTime.Now.Year - AppSettings.StartingYear) + 1)*lt.YearlyLeave
                     : lt.YearlyLeave)
-            });
+            }).ToList();
 
-            IEnumerable<LeaveTypeAmount> manualAllotments =
+            List<LeaveTypeAmount> manualAllotments =
                 e.EmployeeLeaveManualAllotments.GroupBy(ea => ea.LeaveType).Select(ea => new LeaveTypeAmount
                 {
                     LeaveType = ea.Key,
                     Days =
                         ea.Sum(
                             l => ea.Key.IsInheritable ? l.Days : (l.DateTime.Year == DateTime.Now.Year ? l.Days : 0))
-                });
+                }).ToList();
 
             foreach (LeaveTypeAmount leaveTypeAmount in startingLeave)
             {
@@ -41,7 +41,8 @@ namespace Logic
                 if (!leaveTypeAmount.LeaveType.IsInheritable)
                     leaveRequests = leaveRequests.Where(lr => lr.DateTime.Year == DateTime.Now.Year);
 
-                var manualAllotment = manualAllotments.SingleOrDefault(ma => ma.LeaveType == leaveTypeAmount.LeaveType);
+                LeaveTypeAmount manualAllotment =
+                    manualAllotments.SingleOrDefault(ma => ma.LeaveType == leaveTypeAmount.LeaveType);
 
                 if (manualAllotment != null)
                     leaveTypeAmount.Days += manualAllotment.Days;

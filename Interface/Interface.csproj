@@ -136,6 +136,7 @@
     </Compile>
     <Compile Include="Models\AddUserModel.cs" />
     <Compile Include="Models\BookLeaveModel.cs" />
+    <Compile Include="Models\GiveLeaveModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +157,7 @@
     <Content Include="Scripts\moment.min.js.map">
       <DependentUpon>moment.min.js</DependentUpon>
     </Content>
+    <Content Include="Views\Admin\GiveLeave.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

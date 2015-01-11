@@ -17,7 +17,7 @@ namespace Interface.Controllers
         [HttpPost]
         public ActionResult Index(string email, string password, string redirectURL)
         {
-            Employee employee = hrEntities.Employees.SingleOrDefault(e => e.Email.Equals(email));
+            Employee employee = hrEntities.Employees.SingleOrDefault(e => !e.IsDisabled && e.Email.Equals(email));
             if (employee != null)
             {
                 byte[] triedPassword = Security.Hash(password, employee.Salt);

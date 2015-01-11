@@ -35,14 +35,14 @@
                 }).length;
             });
 
-            this.remainingLeaveTypes = @Html.Raw(JsonConvert.SerializeObject(Model.RemainingLeave));
+            this.remainingLeaveTypes = @Html.Raw(JsonConvert.SerializeObject(Model.RemainingLeave.Select(rl => new {LeaveTypeID = rl.LeaveType.ID, Days = rl.Days})));
 
             this.remainingLeave = ko.computed(function() {
                 var leaveType = $.grep(that.remainingLeaveTypes, function(e) {
-                    return e.LeaveType.ID == parseInt(that.leaveType())
+                    return e.LeaveTypeID == parseInt(that.leaveType())
                 });
 
-                return leaveType[0].Days - that.totalFullDays() - (that.totalHalfDays()/2.0)
+                return leaveType[0].Days - that.totalFullDays() - (that.totalHalfDays() / 2.0)
             });
         };
 
@@ -51,8 +51,8 @@
                 @foreach (LeaveType leaveType in Model.LeaveTypes)
                 {
                     @:case '@leaveType.ID':
-                    @:return '@leaveType.Name';
-                }
+                                                        @:return '@leaveType.Name';
+                                                    }
             }
         }
 
@@ -75,6 +75,27 @@
                         IsFullDay: ko.observable("1")
                     });
                 }
+            });
+
+            $("#submit").click(function() {
+                $(this).button('loading');
+
+                $.ajax({
+                    type:"POST",
+                    url:"@Url.Action("Book")",
+                    dataType:"json",
+                    contentType:"application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        Dates: ko.toJS(model.selectedDates),
+                        LeaveType: model.leaveType()
+                    })
+                }).done(function(data) {
+                    $("#leaveBooked").modal().on('hide.bs.modal', function(e) {
+                        window.location = '@Url.Action("Index", "Dashboard")';
+                    });
+                });
+
+
             });
         });
     </script>
@@ -139,7 +160,32 @@
                         @:Your leave is automatically approved.
                     }
                 </div>
-                <button data-bind="visible: totalFullDays()>0 || totalHalfDays()>0" type="button" class="btn btn-success btn-lg btn-block">Apply for Leave</button>
+                <button id="submit" data-loading-text="Submitting..." data-bind="visible: totalFullDays()>0 || totalHalfDays()>0" type="button" class="btn btn-success btn-lg btn-block">Apply for Leave</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="leaveBooked" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Leave Booked</h4>
+            </div>
+            <div class="modal-body">
+                @if (Model.CurrentUser.Supervisor != null)
+                {
+                    @:Your leave application has been submitted but it needs to be approved by @Model.CurrentUser.Supervisor.Name @Model.CurrentUser.Supervisor.Surname. When there is any update on your leave application you will be notified by email
+                }
+                else
+                {
+                    @:Your leave application has been submitted and automatically approved.
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cool!</button>
             </div>
         </div>
     </div>

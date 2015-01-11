@@ -58,7 +58,8 @@
     <Compile Include="Employee.cs">
       <DependentUpon>HRModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="EmployeeExtension.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="HREntitiesExtension.cs" />
     <Compile Include="EmployeeLeaveManualAllotment.cs">
       <DependentUpon>HRModel.tt</DependentUpon>
     </Compile>

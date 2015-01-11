@@ -33,7 +33,7 @@
                     <div class="form-group">
                         <select name="SupervisorID" class="form-control" tabindex="4">
                             <option value="">No Supervisor</option>
-                            @foreach (Employee supervisor in Model.Supervisors)
+                            @foreach (Employee supervisor in Model.Supervisors.OrderBy(e => e.Name).ThenBy(e => e.Surname))
                             {
                                 <option value="@supervisor.ID">@supervisor.Name @supervisor.Surname</option>
                             }

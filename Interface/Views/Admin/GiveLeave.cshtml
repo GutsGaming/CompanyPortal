@@ -1,0 +1,34 @@
+﻿@using Logic
+@model Interface.Models.GiveLeaveModel
+
+
+@{
+    ViewBag.Title = "Give Leave";
+    Layout = "~/Views/_LoggedIn.cshtml";
+}
+
+<form method="POST">
+    <div class="form-group">
+        <label for="employeeID">Employee</label>
+        <select id="employeeID" name="employeeID" class="form-control">
+            @foreach (var employee in Model.Employees.OrderBy(e => e.Name).ThenBy(e => e.Surname))
+            {
+                <option value="@employee.ID">@employee.Name @employee.Surname</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="leaveDays">Number of Days</label>
+        <input type="number" class="form-control" id="leaveDays" name="leaveDays" placeholder="Days">
+    </div>
+    <div class="form-group">
+        <label for="leaveTypeID">Leave Type</label>
+        <select id="leaveTypeID" name="leaveTypeID" class="form-control">
+            @foreach (var leaveType in Model.LeaveTypes)
+            {
+                <option value="@leaveType.ID">@leaveType.Name</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Give Leave</button>
+</form>
