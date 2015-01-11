@@ -29,6 +29,8 @@
 
     <add key="MailAddressFromName" value=""/>
     <add key="MailAddressFromEmail" value=""/>
+    
+    <add key="StartingYear" value="2015"/>
   </appSettings>
   <system.web>
     <compilation debug="true" targetFramework="4.5.1" />

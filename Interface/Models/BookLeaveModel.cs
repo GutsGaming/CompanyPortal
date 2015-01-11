@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using Logic;
 
 namespace Interface.Models
@@ -8,5 +9,7 @@ namespace Interface.Models
         public DbSet<LeaveType> LeaveTypes { get; set; }
 
         public Employee CurrentUser { get; set; }
+
+        public IEnumerable<LeaveTypeAmount> RemainingLeave { get; set; }
     }
 }

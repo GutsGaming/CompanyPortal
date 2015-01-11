@@ -17,7 +17,7 @@ namespace Logic
         public Employee()
         {
             this.EmployeeLeaveManualAllotments = new HashSet<EmployeeLeaveManualAllotment>();
-            this.EmployeeLeaveManualAllotments1 = new HashSet<EmployeeLeaveManualAllotment>();
+            this.EmployeesGivenManualLeave = new HashSet<EmployeeLeaveManualAllotment>();
             this.EmployeeLeaveRequests = new HashSet<EmployeeLeaveRequest>();
             this.EmployeeLeaveRequestStatusChanges = new HashSet<EmployeeLeaveRequestStatusChanx>();
             this.Subordinates = new HashSet<Employee>();
@@ -36,7 +36,7 @@ namespace Logic
         public bool IsDisabled { get; set; }
     
         public virtual ICollection<EmployeeLeaveManualAllotment> EmployeeLeaveManualAllotments { get; set; }
-        public virtual ICollection<EmployeeLeaveManualAllotment> EmployeeLeaveManualAllotments1 { get; set; }
+        public virtual ICollection<EmployeeLeaveManualAllotment> EmployeesGivenManualLeave { get; set; }
         public virtual ICollection<EmployeeLeaveRequest> EmployeeLeaveRequests { get; set; }
         public virtual ICollection<EmployeeLeaveRequestStatusChanx> EmployeeLeaveRequestStatusChanges { get; set; }
         public virtual ICollection<Employee> Subordinates { get; set; }

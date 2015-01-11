@@ -21,6 +21,7 @@
         <AssociationConnector Association="HRModel.FK_EmployeeLeaveRequestStatusChanges_Employees" />
         <AssociationConnector Association="HRModel.FK_EmployeeLeaveRequestStatusChanges_LeaveStatuses" />
         <AssociationConnector Association="HRModel.FK_Employees_Employees" />
+        <AssociationConnector Association="HRModel.FK_EmployeeLeaveManualAllotments_LeaveTypes" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

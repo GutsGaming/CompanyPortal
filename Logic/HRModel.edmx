@@ -13,6 +13,8 @@
           <Property Name="EmployeeID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="GivenByEmployeeID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="DateTime" Type="datetime" Nullable="false" />
+          <Property Name="LeaveTypeID" Type="int" Nullable="false" />
+          <Property Name="Days" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="EmployeeLeaveRequestDates">
           <Key>
@@ -21,6 +23,7 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="EmployeeLeaveRequestID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Day" Type="date" Nullable="false" />
+          <Property Name="IsFullDay" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="EmployeeLeaveRequests">
           <Key>
@@ -72,7 +75,6 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
           <Property Name="YearlyLeave" Type="int" Nullable="false" />
-          <Property Name="IsAcquired" Type="bit" Nullable="false" />
           <Property Name="IsInheritable" Type="bit" Nullable="false" />
         </EntityType>
         <Association Name="FK_EmployeeLeaveManualAllotments_Employees">
@@ -96,6 +98,20 @@
             </Principal>
             <Dependent Role="EmployeeLeaveManualAllotments">
               <PropertyRef Name="GivenByEmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeeLeaveManualAllotments_LeaveTypes">
+          <End Role="LeaveTypes" Type="Self.LeaveTypes" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="EmployeeLeaveManualAllotments" Type="Self.EmployeeLeaveManualAllotments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeaveTypes">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveManualAllotments">
+              <PropertyRef Name="LeaveTypeID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -201,6 +217,10 @@
             <End Role="Employees" EntitySet="Employees" />
             <End Role="EmployeeLeaveManualAllotments" EntitySet="EmployeeLeaveManualAllotments" />
           </AssociationSet>
+          <AssociationSet Name="FK_EmployeeLeaveManualAllotments_LeaveTypes" Association="Self.FK_EmployeeLeaveManualAllotments_LeaveTypes">
+            <End Role="LeaveTypes" EntitySet="LeaveTypes" />
+            <End Role="EmployeeLeaveManualAllotments" EntitySet="EmployeeLeaveManualAllotments" />
+          </AssociationSet>
           <AssociationSet Name="FK_EmployeeLeaveRequestDates_EmployeeLeaveRequests" Association="Self.FK_EmployeeLeaveRequestDates_EmployeeLeaveRequests">
             <End Role="EmployeeLeaveRequests" EntitySet="EmployeeLeaveRequests" />
             <End Role="EmployeeLeaveRequestDates" EntitySet="EmployeeLeaveRequestDates" />
@@ -278,6 +298,10 @@
             <End Role="Employee" EntitySet="Employees" />
             <End Role="Employee1" EntitySet="Employees" />
           </AssociationSet>
+          <AssociationSet Name="FK_EmployeeLeaveManualAllotments_LeaveTypes" Association="HRModel.FK_EmployeeLeaveManualAllotments_LeaveTypes">
+            <End Role="LeaveType" EntitySet="LeaveTypes" />
+            <End Role="EmployeeLeaveManualAllotment" EntitySet="EmployeeLeaveManualAllotments" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="EmployeeLeaveManualAllotment">
           <Key>
@@ -289,6 +313,9 @@
           <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Employee" Relationship="HRModel.FK_EmployeeLeaveManualAllotments_Employees" FromRole="EmployeeLeaveManualAllotment" ToRole="Employee" />
           <NavigationProperty Name="Employee1" Relationship="HRModel.FK_EmployeeLeaveManualAllotments_Employees1" FromRole="EmployeeLeaveManualAllotment" ToRole="Employee" />
+          <Property Name="LeaveTypeID" Type="Int32" Nullable="false" />
+          <Property Name="Days" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="LeaveType" Relationship="HRModel.FK_EmployeeLeaveManualAllotments_LeaveTypes" FromRole="EmployeeLeaveManualAllotment" ToRole="LeaveType" />
         </EntityType>
         <EntityType Name="EmployeeLeaveRequestDate">
           <Key>
@@ -298,6 +325,7 @@
           <Property Name="EmployeeLeaveRequestID" Type="Guid" Nullable="false" />
           <Property Name="Day" Type="DateTime" Nullable="false" Precision="0" />
           <NavigationProperty Name="EmployeeLeaveRequest" Relationship="HRModel.FK_EmployeeLeaveRequestDates_EmployeeLeaveRequests" FromRole="EmployeeLeaveRequestDate" ToRole="EmployeeLeaveRequest" />
+          <Property Name="IsFullDay" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="EmployeeLeaveRequest">
           <Key>
@@ -342,7 +370,7 @@
           <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
           <Property Name="IsDisabled" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="EmployeeLeaveManualAllotments" Relationship="HRModel.FK_EmployeeLeaveManualAllotments_Employees" FromRole="Employee" ToRole="EmployeeLeaveManualAllotment" />
-          <NavigationProperty Name="EmployeeLeaveManualAllotments1" Relationship="HRModel.FK_EmployeeLeaveManualAllotments_Employees1" FromRole="Employee" ToRole="EmployeeLeaveManualAllotment" />
+          <NavigationProperty Name="EmployeesGivenManualLeave" Relationship="HRModel.FK_EmployeeLeaveManualAllotments_Employees1" FromRole="Employee" ToRole="EmployeeLeaveManualAllotment" />
           <NavigationProperty Name="EmployeeLeaveRequests" Relationship="HRModel.FK_EmployeeLeaveRequests_Employees" FromRole="Employee" ToRole="EmployeeLeaveRequest" />
           <NavigationProperty Name="EmployeeLeaveRequestStatusChanges" Relationship="HRModel.FK_EmployeeLeaveRequestStatusChanges_Employees" FromRole="Employee" ToRole="EmployeeLeaveRequestStatusChanx" />
           <NavigationProperty Name="Subordinates" Relationship="HRModel.FK_Employees_Employees" FromRole="Employee" ToRole="Employee1" />
@@ -363,9 +391,9 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="YearlyLeave" Type="Int32" Nullable="false" />
-          <Property Name="IsAcquired" Type="Boolean" Nullable="false" />
           <Property Name="IsInheritable" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="EmployeeLeaveRequests" Relationship="HRModel.FK_EmployeeLeaveRequests_LeaveTypes" FromRole="LeaveType" ToRole="EmployeeLeaveRequest" />
+          <NavigationProperty Name="EmployeeLeaveManualAllotments" Relationship="HRModel.FK_EmployeeLeaveManualAllotments_LeaveTypes" FromRole="LeaveType" ToRole="EmployeeLeaveManualAllotment" />
         </EntityType>
         <Association Name="FK_EmployeeLeaveManualAllotments_Employees">
           <End Type="HRModel.Employee" Role="Employee" Multiplicity="1" />
@@ -477,6 +505,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_EmployeeLeaveManualAllotments_LeaveTypes">
+          <End Type="HRModel.LeaveType" Role="LeaveType" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="HRModel.EmployeeLeaveManualAllotment" Role="EmployeeLeaveManualAllotment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeaveType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EmployeeLeaveManualAllotment">
+              <PropertyRef Name="LeaveTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -486,6 +528,8 @@
           <EntitySetMapping Name="EmployeeLeaveManualAllotments">
             <EntityTypeMapping TypeName="HRModel.EmployeeLeaveManualAllotment">
               <MappingFragment StoreEntitySet="EmployeeLeaveManualAllotments">
+                <ScalarProperty Name="Days" ColumnName="Days" />
+                <ScalarProperty Name="LeaveTypeID" ColumnName="LeaveTypeID" />
                 <ScalarProperty Name="DateTime" ColumnName="DateTime" />
                 <ScalarProperty Name="GivenByEmployeeID" ColumnName="GivenByEmployeeID" />
                 <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
@@ -496,6 +540,7 @@
           <EntitySetMapping Name="EmployeeLeaveRequestDates">
             <EntityTypeMapping TypeName="HRModel.EmployeeLeaveRequestDate">
               <MappingFragment StoreEntitySet="EmployeeLeaveRequestDates">
+                <ScalarProperty Name="IsFullDay" ColumnName="IsFullDay" />
                 <ScalarProperty Name="Day" ColumnName="Day" />
                 <ScalarProperty Name="EmployeeLeaveRequestID" ColumnName="EmployeeLeaveRequestID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
@@ -553,7 +598,6 @@
             <EntityTypeMapping TypeName="HRModel.LeaveType">
               <MappingFragment StoreEntitySet="LeaveTypes">
                 <ScalarProperty Name="IsInheritable" ColumnName="IsInheritable" />
-                <ScalarProperty Name="IsAcquired" ColumnName="IsAcquired" />
                 <ScalarProperty Name="YearlyLeave" ColumnName="YearlyLeave" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ID" ColumnName="ID" />

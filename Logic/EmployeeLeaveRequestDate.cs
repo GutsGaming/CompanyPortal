@@ -17,6 +17,7 @@ namespace Logic
         public int ID { get; set; }
         public System.Guid EmployeeLeaveRequestID { get; set; }
         public System.DateTime Day { get; set; }
+        public bool IsFullDay { get; set; }
     
         public virtual EmployeeLeaveRequest EmployeeLeaveRequest { get; set; }
     }

@@ -27,6 +27,11 @@ namespace Logic
             }
         }
 
+        public static int StartingYear
+        {
+            get { return Convert.ToInt32(Setting("StartingYear")); }
+        }
+
         public static string CompanyName
         {
             get { return Setting("CompanyName"); }

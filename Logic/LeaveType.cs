@@ -17,14 +17,15 @@ namespace Logic
         public LeaveType()
         {
             this.EmployeeLeaveRequests = new HashSet<EmployeeLeaveRequest>();
+            this.EmployeeLeaveManualAllotments = new HashSet<EmployeeLeaveManualAllotment>();
         }
     
         public int ID { get; set; }
         public string Name { get; set; }
         public int YearlyLeave { get; set; }
-        public bool IsAcquired { get; set; }
         public bool IsInheritable { get; set; }
     
         public virtual ICollection<EmployeeLeaveRequest> EmployeeLeaveRequests { get; set; }
+        public virtual ICollection<EmployeeLeaveManualAllotment> EmployeeLeaveManualAllotments { get; set; }
     }
 }

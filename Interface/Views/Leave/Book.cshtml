@@ -3,6 +3,7 @@
     Layout = "~/Views/_LoggedIn.cshtml";
 }
 @using Logic
+@using Newtonsoft.Json
 @model Interface.Models.BookLeaveModel
 @section Styles
 {
@@ -32,6 +33,16 @@
                 return ko.utils.arrayFilter(that.selectedDates(), function(item) {
                     return item.IsFullDay() == false;
                 }).length;
+            });
+
+            this.remainingLeaveTypes = @Html.Raw(JsonConvert.SerializeObject(Model.RemainingLeave));
+
+            this.remainingLeave = ko.computed(function() {
+                var leaveType = $.grep(that.remainingLeaveTypes, function(e) {
+                    return e.LeaveType.ID == parseInt(that.leaveType())
+                });
+
+                return leaveType[0].Days - that.totalFullDays() - (that.totalHalfDays()/2.0)
             });
         };
 
@@ -78,7 +89,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4" data-bind="visible: selectedDates().length>0">
         <div class="panel panel-default">
             <div class="panel-heading">Choose Leave Type</div>
             <div class="panel-body">
@@ -98,7 +109,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4" data-bind="visible: selectedDates().length>0">
         <div class="panel panel-default">
             <div class="panel-heading">Confirm</div>
             <div class="panel-body">
@@ -118,7 +129,7 @@
                                 <input type="radio" name="leaveType" autocomplete="off" value="@leaveType.ID" data-bind="checked: leaveType"> @leaveType.Name
                             </label>
                         }
-                    </div> leave. This leaves you with days of <span data-bind="text: leaveTypeToText(leaveType())" style="text-transform: lowercase"></span> leave.
+                    </div> leave. This leaves you with <span data-bind="text: remainingLeave"></span> days of <span data-bind="text: leaveTypeToText(leaveType())" style="text-transform: lowercase"></span> leave.
                     @if (Model.CurrentUser.Supervisor != null)
                     {
                         @:Your leave needs to be approved by @Model.CurrentUser.Supervisor.Name @Model.CurrentUser.Supervisor.Surname.

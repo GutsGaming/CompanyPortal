@@ -18,8 +18,11 @@ namespace Logic
         public System.Guid EmployeeID { get; set; }
         public System.Guid GivenByEmployeeID { get; set; }
         public System.DateTime DateTime { get; set; }
+        public int LeaveTypeID { get; set; }
+        public int Days { get; set; }
     
         public virtual Employee Employee { get; set; }
         public virtual Employee Employee1 { get; set; }
+        public virtual LeaveType LeaveType { get; set; }
     }
 }

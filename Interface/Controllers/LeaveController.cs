@@ -19,10 +19,13 @@ namespace Interface.Controllers
         public ActionResult Book()
         {
             var userID = new Guid(Session["EmployeeID"].ToString());
+            var currentUser = hrEntities.Employees.SingleOrDefault(e => e.ID == userID);
+
             var bookLeaveModel = new BookLeaveModel
             {
                 LeaveTypes = hrEntities.LeaveTypes,
-                CurrentUser = hrEntities.Employees.SingleOrDefault(e => e.ID == userID)
+                CurrentUser = currentUser,
+                RemainingLeave = hrEntities.GetRemainingLeave(currentUser)
             };
             return View(bookLeaveModel);
         }
