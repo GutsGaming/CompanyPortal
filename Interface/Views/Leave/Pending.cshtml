@@ -35,10 +35,10 @@
                     @leaveRequest.Employee.Name @leaveRequest.Employee.Surname
                 </td>
                 <td>
-                    <span class="moment">@leaveRequest.DateTime.ToString("o")</span>
+                    <span class="moment">@leaveRequest.DateTime.ToMomentTime()</span>
                 </td>
                 <td>
-                    <span class="moment">@leaveRequest.EmployeeLeaveRequestDates.OrderByDescending(elrd => elrd.Day).FirstOrDefault().Day.ToString("o")</span>
+                    <span class="moment">@leaveRequest.EmployeeLeaveRequestDates.OrderByDescending(elrd => elrd.Day).FirstOrDefault().Day.ToMomentTime()</span>
                 </td>
                 <td>
                     @leaveRequest.LeaveType.Name

@@ -10,7 +10,7 @@
 }
 
 <h2>@Model.Employee.Name's Leave Application <span class="label @(latestChange == null ? "label-warning" : latestChange.LeaveStatusID == 1 ? "label-danger" : "label-success")">@(latestChange == null ? "Pending" : latestChange.LeaveStatusID == 1 ? "Rejected" : "Approved")</span></h2>
-<h3>Submitted <span class="moment">@Model.DateTime.ToString("O")</span> for some @Model.LeaveType.Name.ToLower() leave <span class="moment">@Model.EmployeeLeaveRequestDates.OrderBy(elrd => elrd.Day).FirstOrDefault().Day.ToString("o")</span></h3>
+<h3>Submitted <span class="moment">@Model.DateTime.ToMomentTime()</span> for some @Model.LeaveType.Name.ToLower() leave <span class="moment">@Model.EmployeeLeaveRequestDates.OrderBy(elrd => elrd.Day).FirstOrDefault().Day.ToMomentTime()</span></h3>
 
 <div style="margin: 50px 0">
     Here be visual calendar
@@ -20,7 +20,7 @@
 {
     <blockquote class="@(statusChange.LeaveStatusID == 1 ? "rejected" : "approved")">
         <p>@statusChange.Reason</p>
-        <footer>@statusChange.ChangedByEmployee.Name @statusChange.ChangedByEmployee.Surname <cite class="moment">@statusChange.DateTime.ToString("o")</cite></footer>
+        <footer>@statusChange.ChangedByEmployee.Name @statusChange.ChangedByEmployee.Surname <cite class="moment">@statusChange.DateTime.ToMomentTime()</cite></footer>
     </blockquote>
 }
 
