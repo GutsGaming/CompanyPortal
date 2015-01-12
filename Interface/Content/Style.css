@@ -3,4 +3,22 @@
     padding-top: 70px;
 }
 
-.hideRadios input[type=radio] { display: none; }
+.hideRadios input[type=radio] {
+    display: none;
+}
+
+.moment {
+    font-weight: bold;
+}
+
+blockquote.approved {
+    border-left-color: #18bc9c;
+}
+
+blockquote.rejected {
+    border-left-color: #e74c3c;
+}
+
+.leaveTable tr {
+    cursor: pointer;
+}

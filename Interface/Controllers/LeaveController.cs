@@ -14,9 +14,68 @@ namespace Interface.Controllers
     {
         private readonly HREntities hrEntities = new HREntities();
 
+        [NeedsLogin]
         public ActionResult Index()
         {
-            return View();
+            var userID = new Guid(Session["EmployeeID"].ToString());
+            Employee currentUser = hrEntities.Employees.SingleOrDefault(e => e.ID == userID);
+
+            return View(currentUser);
+        }
+
+        [NeedsLogin]
+        public ActionResult Pending()
+        {
+            var userID = new Guid(Session["EmployeeID"].ToString());
+            Employee currentUser = hrEntities.Employees.SingleOrDefault(e => e.ID == userID);
+
+            return View(currentUser.Subordinates.SelectMany(so=>so.EmployeeLeaveRequests).Where(elr=>elr.EmployeeLeaveRequestStatusChanges.Count()==0));
+        }
+
+        [NeedsLogin]
+        public ActionResult Application(Guid id)
+        {
+            var userID = new Guid(Session["EmployeeID"].ToString());
+            Employee currentUser = hrEntities.Employees.SingleOrDefault(e => e.ID == userID);
+            ViewBag.CurrentUser = currentUser;
+
+            EmployeeLeaveRequest employeeLeaveRequest =
+                hrEntities.EmployeeLeaveRequests.SingleOrDefault(
+                    elr => elr.ID == id &&
+                           (elr.EmployeeID == currentUser.ID ||
+                            (elr.Employee.Supervisor != null && elr.Employee.Supervisor.ID == currentUser.ID) ||
+                            currentUser.IsAdmin));
+
+            if (employeeLeaveRequest == null)
+                return HttpNotFound();
+
+            return View(employeeLeaveRequest);
+        }
+
+        [NeedsLogin]
+        [HttpPost]
+        public ActionResult Application(Guid id, int statusID, string reason)
+        {
+            var userID = new Guid(Session["EmployeeID"].ToString());
+            Employee currentUser = hrEntities.Employees.SingleOrDefault(e => e.ID == userID);
+
+            EmployeeLeaveRequest employeeLeaveRequest =
+                hrEntities.EmployeeLeaveRequests.SingleOrDefault(
+                    elr => elr.ID == id &&
+                           ((elr.Employee.Supervisor != null && elr.Employee.Supervisor.ID == currentUser.ID) ||
+                            currentUser.IsAdmin));
+
+            employeeLeaveRequest.EmployeeLeaveRequestStatusChanges.Add(new EmployeeLeaveRequestStatusChanx
+            {
+                DateTime = DateTime.Now,
+                ChangedByEmployeeID = userID,
+                LeaveStatusID = statusID,
+                Reason = reason
+            });
+
+            hrEntities.SaveChanges();
+
+            return RedirectToAction("Application", new RouteValueDictionary { { "ID", id } });
         }
 
         [NeedsLogin]
@@ -58,6 +117,17 @@ namespace Interface.Controllers
                 });
             }
 
+            if (supervisor == null)
+            {
+                leaveRequest.EmployeeLeaveRequestStatusChanges.Add(new EmployeeLeaveRequestStatusChanx
+                {
+                    ChangedByEmployee = currentUser,
+                    DateTime = DateTime.Now,
+                    LeaveStatusID = 2,
+                    Reason = "Auto-Approved"
+                });
+            }
+
             currentUser.EmployeeLeaveRequests.Add(leaveRequest);
 
             var tasks = new List<Task>();
@@ -66,8 +136,8 @@ namespace Interface.Controllers
 
             if (supervisor != null)
             {
-                string approvalURL = @Url.Action("Approve", "Supervisor",
-                    new RouteValueDictionary {{"ID", leaveRequest.ID}}, Request.Url.Scheme);
+                string approvalURL = @Url.Action("Application", "Leave",
+                    new RouteValueDictionary { { "ID", leaveRequest.ID } }, Request.Url.Scheme);
 
                 var supervisorMailMessage = new MailMessage(AppSettings.DefaultMailAddress,
                     supervisor.GetMailAddress())
@@ -84,7 +154,7 @@ namespace Interface.Controllers
 
 
             await Task.WhenAll(tasks);
-            return Json(true);
+            return Json(leaveRequest.ID);
         }
     }
 }

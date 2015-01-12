@@ -1,0 +1,47 @@
+﻿@model Logic.EmployeeLeaveRequest
+
+@{
+    ViewBag.Title = Model.Employee.Name + "'s Leave Application";
+    Layout = "~/Views/_LoggedIn.cshtml";
+}
+
+@{
+    var latestChange = Model.EmployeeLeaveRequestStatusChanges.OrderByDescending(d => d.DateTime).FirstOrDefault();
+}
+
+<h2>@Model.Employee.Name's Leave Application <span class="label @(latestChange == null ? "label-warning" : latestChange.LeaveStatusID == 1 ? "label-danger" : "label-success")">@(latestChange == null ? "Pending" : latestChange.LeaveStatusID == 1 ? "Rejected" : "Approved")</span></h2>
+<h3>Submitted <span class="moment">@Model.DateTime.ToString("O")</span> for some @Model.LeaveType.Name.ToLower() leave <span class="moment">@Model.EmployeeLeaveRequestDates.OrderBy(elrd => elrd.Day).FirstOrDefault().Day.ToString("o")</span></h3>
+
+<div style="margin: 50px 0">
+    Here be visual calendar
+</div>
+
+@foreach (var statusChange in Model.EmployeeLeaveRequestStatusChanges.OrderByDescending(elrsc => elrsc.DateTime))
+{
+    <blockquote class="@(statusChange.LeaveStatusID == 1 ? "rejected" : "approved")">
+        <p>@statusChange.Reason</p>
+        <footer>@statusChange.ChangedByEmployee.Name @statusChange.ChangedByEmployee.Surname <cite class="moment">@statusChange.DateTime.ToString("o")</cite></footer>
+    </blockquote>
+}
+
+@if ((Model.Employee.SupervisorID == ViewBag.CurrentUser.ID) || ViewBag.CurrentUser.IsAdmin)
+{
+    <form method="POST">
+        <div class="form-group">
+            <label>Status</label><br />
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-success">
+                    <input type="radio" name="statusID" id="option1" autocomplete="off" value="2"> Approve
+                </label>
+                <label class="btn btn-danger">
+                    <input type="radio" name="statusID" id="option2" autocomplete="off" value="1"> Reject
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="reason">Reason</label>
+            <textarea class="form-control" name="reason" id="reason" placeholder="Reason"></textarea>
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+}

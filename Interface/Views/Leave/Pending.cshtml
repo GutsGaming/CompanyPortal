@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Logic.EmployeeLeaveRequest>
+
+@{
+    ViewBag.Title = "Pending Leave Applications";
+    Layout = "~/Views/_LoggedIn.cshtml";
+}
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function() {
+            $(".leaveTable tr").click(function() {
+                window.location = '@Url.Action("Application")/' + $(this).data("id");
+            });
+        });
+    </script>
+}
+
+<h2>Pending Leave Applications</h2>
+
+<table class="table table-hover leaveTable">
+    <thead>
+        <tr>
+            <th>Employee</th>
+            <th>Submitted</th>
+            <th>When</th>
+            <th>Leave Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var leaveRequest in Model.OrderByDescending(elr => elr.DateTime))
+        {
+            <tr data-id="@leaveRequest.ID">
+                <td>
+                    @leaveRequest.Employee.Name @leaveRequest.Employee.Surname
+                </td>
+                <td>
+                    <span class="moment">@leaveRequest.DateTime.ToString("o")</span>
+                </td>
+                <td>
+                    <span class="moment">@leaveRequest.EmployeeLeaveRequestDates.OrderByDescending(elrd => elrd.Day).FirstOrDefault().Day.ToString("o")</span>
+                </td>
+                <td>
+                    @leaveRequest.LeaveType.Name
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

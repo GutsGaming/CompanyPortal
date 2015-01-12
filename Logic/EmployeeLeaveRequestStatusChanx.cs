@@ -22,7 +22,7 @@ namespace Logic
         public string Reason { get; set; }
     
         public virtual EmployeeLeaveRequest EmployeeLeaveRequest { get; set; }
-        public virtual Employee Employee { get; set; }
+        public virtual Employee ChangedByEmployee { get; set; }
         public virtual LeaveStatus LeaveStatus { get; set; }
     }
 }

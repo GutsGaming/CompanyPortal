@@ -106,6 +106,7 @@
     <Content Include="Content\datepicker3.min.css">
       <DependentUpon>datepicker3.css</DependentUpon>
     </Content>
+    <Content Include="Scripts\Script.js" />
     <Content Include="Content\Style.css" />
     <Content Include="Content\Style.min.css">
       <DependentUpon>Style.css</DependentUpon>
@@ -118,6 +119,9 @@
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js">
       <DependentUpon>moment.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Script.min.js">
+      <DependentUpon>Script.js</DependentUpon>
     </Content>
     <Content Include="Web.config" />
   </ItemGroup>
@@ -158,6 +162,12 @@
       <DependentUpon>moment.min.js</DependentUpon>
     </Content>
     <Content Include="Views\Admin\GiveLeave.cshtml" />
+    <Content Include="Views\Leave\Application.cshtml" />
+    <Content Include="Views\Leave\Index.cshtml" />
+    <Content Include="Scripts\Script.min.js.map">
+      <DependentUpon>Script.min.js</DependentUpon>
+    </Content>
+    <Content Include="Views\Leave\Pending.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

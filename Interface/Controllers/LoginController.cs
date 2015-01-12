@@ -27,6 +27,7 @@ namespace Interface.Controllers
                 {
                     Session.Add("EmployeeID", employee.ID);
                     Session.Add("IsAdmin", employee.IsAdmin);
+                    Session.Add("IsSupervisor", employee.Subordinates.Count() > 0);
                     Session.Add("Name", employee.Name);
 
                     if (String.IsNullOrEmpty(redirectURL))

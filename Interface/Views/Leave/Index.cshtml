@@ -1,0 +1,66 @@
+﻿@model Logic.Employee
+
+@{
+    ViewBag.Title = "Leave Applications";
+    Layout = "~/Views/_LoggedIn.cshtml";
+}
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function() {
+            $(".leaveTable tr").click(function() {
+                window.location = '@Url.Action("Application")/' + $(this).data("id");
+            });
+        });
+    </script>
+}
+
+<h2>Leave Applications</h2>
+
+<table class="table table-hover leaveTable">
+    <thead>
+        <tr>
+            <th>Status</th>
+            <th>Submitted</th>
+            <th>When</th>
+            <th>Leave Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var leaveRequest in Model.EmployeeLeaveRequests.OrderByDescending(elr=>elr.DateTime))
+        {
+            var latestChange = leaveRequest.EmployeeLeaveRequestStatusChanges.OrderByDescending(elrsc => elrsc.DateTime).FirstOrDefault();
+            bool? isApproved;
+            if (latestChange == null)
+            {
+                isApproved = null;
+            }
+            else
+            {
+                if (latestChange.LeaveStatusID == 1)
+                {
+                    isApproved = false;
+                }
+                else
+                {
+                    isApproved = true;
+                }
+            }
+            <tr class="@(isApproved.HasValue?isApproved.Value?"success":"danger":"warning")" data-id="@leaveRequest.ID">
+                <td>
+                    @(isApproved.HasValue ? isApproved.Value ? "Approved" : "Rejected" : "Pending")
+                </td>
+                <td>
+                    <span class="moment">@leaveRequest.DateTime.ToString("o")</span>
+                </td>
+                <td>
+                    <span class="moment">@leaveRequest.EmployeeLeaveRequestDates.OrderByDescending(elrd=>elrd.Day).FirstOrDefault().Day.ToString("o")</span>
+                </td>
+                <td>
+                    @leaveRequest.LeaveType.Name
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

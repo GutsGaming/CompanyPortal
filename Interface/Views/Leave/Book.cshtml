@@ -13,7 +13,6 @@
 @section Scripts
 {
     <script src="~/Scripts/bootstrap-datepicker.min.js"></script>
-    <script src="~/Scripts/moment.min.js"></script>
 
     <script>
 
@@ -91,7 +90,7 @@
                     })
                 }).done(function(data) {
                     $("#leaveBooked").modal().on('hide.bs.modal', function(e) {
-                        window.location = '@Url.Action("Index", "Dashboard")';
+                        window.location = '@Url.Action("Application", "Leave")/' + data;
                     });
                 });
 
