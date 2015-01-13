@@ -5,7 +5,7 @@ namespace Logic
 {
     public static class Extensions
     {
-        public static string ToMomentTimeToMomentTime(this DateTime dateTime)
+        public static string ToMomentTime(this DateTime dateTime)
         {
             return dateTime.ToString("u");
         }
