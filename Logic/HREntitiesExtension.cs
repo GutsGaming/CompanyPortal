@@ -36,7 +36,14 @@ namespace Logic
             foreach (LeaveTypeAmount leaveTypeAmount in startingLeave)
             {
                 IEnumerable<EmployeeLeaveRequest> leaveRequests =
-                    e.EmployeeLeaveRequests.Where(elr => elr.LeaveTypeID == leaveTypeAmount.LeaveType.ID);
+                    e.EmployeeLeaveRequests.Where(
+                        elr =>
+                            elr.LeaveTypeID == leaveTypeAmount.LeaveType.ID &&
+                            (elr.EmployeeLeaveRequestStatusChanges.OrderByDescending(elrsc => elrsc.DateTime)
+                                .FirstOrDefault() == null ||
+                             elr.EmployeeLeaveRequestStatusChanges.OrderByDescending(elrsc => elrsc.DateTime)
+                                 .FirstOrDefault()
+                                 .LeaveStatusID == 2));
 
                 if (!leaveTypeAmount.LeaveType.IsInheritable)
                     leaveRequests = leaveRequests.Where(lr => lr.DateTime.Year == DateTime.Now.Year);

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Logic.EmployeeLeaveRequest>
+﻿@using Logic
+@model IEnumerable<Logic.EmployeeLeaveRequest>
 
 @{
     ViewBag.Title = "Pending Leave Applications";
@@ -24,6 +25,7 @@
             <th>Employee</th>
             <th>Submitted</th>
             <th>When</th>
+            <th>Duration</th>
             <th>Leave Type</th>
         </tr>
     </thead>
@@ -39,6 +41,28 @@
                 </td>
                 <td>
                     <span class="moment">@leaveRequest.EmployeeLeaveRequestDates.OrderByDescending(elrd => elrd.Day).FirstOrDefault().Day.ToMomentTime()</span>
+                </td>
+                @{
+            var fullDays = leaveRequest.EmployeeLeaveRequestDates.Count(elr => elr.IsFullDay);
+            var halfDays = leaveRequest.EmployeeLeaveRequestDates.Count(elr => !elr.IsFullDay);
+
+            string daysText = String.Empty;
+
+            if (fullDays > 0)
+            {
+                daysText = fullDays + " full day" + (fullDays > 1 ? "s" : "");
+            }
+            if (fullDays > 0 && halfDays > 0)
+            {
+                daysText += " and ";
+            }
+            if (halfDays > 0)
+            {
+                daysText += halfDays + " half day" + (halfDays > 1 ? "s" : "");
+            }
+                }
+                <td>
+                    @daysText
                 </td>
                 <td>
                     @leaveRequest.LeaveType.Name

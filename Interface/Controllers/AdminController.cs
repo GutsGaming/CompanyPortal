@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Interface.Models;
 using Logic;
+using System.Web.Hosting;
 
 namespace Interface.Controllers
 {
@@ -55,7 +56,7 @@ namespace Interface.Controllers
         [HttpPost]
         [NeedsLogin]
         [NeedsAdmin]
-        public async Task<ActionResult> AddUser(Employee employee)
+        public ActionResult AddUser(Employee employee)
         {
             employee.ID = Guid.NewGuid();
 
@@ -65,8 +66,8 @@ namespace Interface.Controllers
             string passwordLink = Url.Action("Register", "User", new RouteValueDictionary {{"id", employee.ID}},
                 Request.Url.Scheme);
 
-            await
-                AppSettings.SmtpClient.SendMailAsync(new MailMessage(AppSettings.DefaultMailAddress,
+            HostingEnvironment.QueueBackgroundWorkItem(
+                ct => AppSettings.SmtpClient.SendMailAsync(new MailMessage(AppSettings.DefaultMailAddress,
                     new MailAddress(employee.Email, employee.Name + employee.Surname))
                 {
                     Subject = "Welcome to the " + AppSettings.CompanyName + " Company Portal",
@@ -74,11 +75,9 @@ namespace Interface.Controllers
                     Body =
                         "<h1>Hello " + employee.Name + "!</h1>You have been invited to join the " +
                         AppSettings.CompanyName +
-                        " Company Portal. Please click this link to create a password: <a href='" + passwordLink + "'>" +
-                        passwordLink + "</a>"
-                });
+                        " Company Portal. Please click <a href='" + passwordLink + "'>this link</a> to create a password so you can start using the portal."
+                }));
 
-            await saveUser;
             return RedirectToAction("Index", "Dashboard");
         }
     }

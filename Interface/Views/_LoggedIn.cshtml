@@ -31,11 +31,26 @@
             <ul class="nav navbar-nav">
                 <li><a href="@Url.Action("Index", "Dashboard")">Dashboard</a></li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Leave <b class="caret"></b></a>
+                    @{
+                        HREntities hrEntities = new HREntities();
+                        var userID = new Guid(Session["EmployeeID"].ToString());
+                        Employee currentUser = hrEntities.Employees.SingleOrDefault(e => e.ID == userID);
+                        var pendingApplications = currentUser.Subordinates.SelectMany(so => so.EmployeeLeaveRequests).Count(elr => elr.EmployeeLeaveRequestStatusChanges.Count() == 0);
+                    }
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        Leave @if (pendingApplications > 0)
+                        {
+                            <span class="badge">@pendingApplications</span>
+                        }<b class="caret"></b>
+                    </a>
                     <ul class="dropdown-menu">
                         <li><a href="@Url.Action("Book", "Leave")">Book Leave</a></li>
                         <li><a href="@Url.Action("Index", "Leave")">View Leave</a></li>
                         <li><a href="#">Leave Calendar</a></li>
+                        @if (pendingApplications > 0)
+                        {
+                            <li><a href="@Url.Action("Pending", "Leave")">Approve Leave <span class="badge">@pendingApplications</span></a></li>
+                        }
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -46,33 +61,15 @@
                         <li><a href="#">Book Resource</a></li>
                     </ul>
                 </li>
-                @if (Convert.ToBoolean(Session["IsSupervisor"]))
-                {
-                    HREntities hrEntities = new HREntities();
-                    var userID = new Guid(Session["EmployeeID"].ToString());
-                    Employee currentUser = hrEntities.Employees.SingleOrDefault(e => e.ID == userID);
-                    var pendingApplications = currentUser.Subordinates.SelectMany(so => so.EmployeeLeaveRequests).Count(elr => elr.EmployeeLeaveRequestStatusChanges.Count() == 0);
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Supervisor <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="@Url.Action("Pending", "Leave")">
-                                    Pending Leave Applications @if (pendingApplications > 0)
-                                    {
-                                        <span class="badge">@pendingApplications</span>
-                                    }
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                }
+
                 @if (Convert.ToBoolean(Session["IsAdmin"]))
                 {
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li><a href="@Url.Action("AddUser", "Admin")">Add New User</a></li>
-                            <li><a href="@Url.Action("GiveLeave", "Admin")">Give Leave</a></li>
+                            <li><a href="@Url.Action("GiveLeave", "Admin")">Give Leave Days</a></li>
+                            <li><a href="#">Force Leave</a></li>
                         </ul>
                     </li>
                 }

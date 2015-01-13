@@ -7,7 +7,7 @@ namespace Logic
     {
         public static string ToMomentTime(this DateTime dateTime)
         {
-            return dateTime.ToString("u");
+            return new DateTimeOffset(dateTime).ToString("o");
         }
         public static MailAddress GetMailAddress(this Employee e)
         {

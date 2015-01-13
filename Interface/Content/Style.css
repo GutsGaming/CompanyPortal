@@ -12,11 +12,11 @@
 }
 
 blockquote.approved {
-    border-left-color: #18bc9c;
+    border-left-color: #3e8f3e;
 }
 
 blockquote.rejected {
-    border-left-color: #e74c3c;
+    border-left-color: #b92c28;
 }
 
 .leaveTable tr {

@@ -1,5 +1,5 @@
 ﻿@using Logic
-@model Logic.Employee
+@model Interface.Models.ViewLeaveModel
 
 @{
     ViewBag.Title = "Leave Applications";
@@ -9,13 +9,36 @@
 @section Scripts
 {
     <script>
-        $(document).ready(function() {
-            $(".leaveTable tr").click(function() {
+        $(document).ready(function () {
+            $(".leaveTable tr").click(function () {
                 window.location = '@Url.Action("Application")/' + $(this).data("id");
             });
         });
     </script>
 }
+
+<h2>Remaining Leave</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Leave Type</th>
+            <th>Remaining Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var remainingLeave in Model.RemainingLeave)
+        {
+            <tr>
+                <td>
+                    @remainingLeave.LeaveType.Name
+                </td>
+                <td>
+                    @remainingLeave.Days
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 <h2>Leave Applications</h2>
 
@@ -25,11 +48,12 @@
             <th>Status</th>
             <th>Submitted</th>
             <th>When</th>
+            <th>Duration</th>
             <th>Leave Type</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var leaveRequest in Model.EmployeeLeaveRequests.OrderByDescending(elr=>elr.DateTime))
+        @foreach (var leaveRequest in Model.User.EmployeeLeaveRequests.OrderByDescending(elr => elr.DateTime))
         {
             var latestChange = leaveRequest.EmployeeLeaveRequestStatusChanges.OrderByDescending(elrsc => elrsc.DateTime).FirstOrDefault();
             bool? isApproved;
@@ -56,7 +80,29 @@
                     <span class="moment">@leaveRequest.DateTime.ToMomentTime()</span>
                 </td>
                 <td>
-                    <span class="moment">@leaveRequest.EmployeeLeaveRequestDates.OrderByDescending(elrd=>elrd.Day).FirstOrDefault().Day.ToMomentTime()</span>
+                    <span class="moment">@leaveRequest.EmployeeLeaveRequestDates.OrderByDescending(elrd => elrd.Day).FirstOrDefault().Day.ToMomentTime()</span>
+                </td>
+                @{
+            var fullDays = leaveRequest.EmployeeLeaveRequestDates.Count(elr => elr.IsFullDay);
+            var halfDays = leaveRequest.EmployeeLeaveRequestDates.Count(elr => !elr.IsFullDay);
+
+            string daysText = String.Empty;
+
+            if (fullDays > 0)
+            {
+                daysText = fullDays + " full day" + (fullDays > 1 ? "s" : "");
+            }
+            if (fullDays > 0 && halfDays > 0)
+            {
+                daysText += " and ";
+            }
+            if (halfDays > 0)
+            {
+                daysText += halfDays + " half day" + (halfDays > 1 ? "s" : "");
+            }
+                }
+                <td>
+                    @daysText
                 </td>
                 <td>
                     @leaveRequest.LeaveType.Name

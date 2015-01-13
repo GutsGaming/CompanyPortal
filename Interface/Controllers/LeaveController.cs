@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Interface.Models;
@@ -20,7 +21,11 @@ namespace Interface.Controllers
             var userID = new Guid(Session["EmployeeID"].ToString());
             Employee currentUser = hrEntities.Employees.SingleOrDefault(e => e.ID == userID);
 
-            return View(currentUser);
+            return View(new ViewLeaveModel
+            {
+                User = currentUser,
+                RemainingLeave = hrEntities.GetRemainingLeave(currentUser)
+            });
         }
 
         [NeedsLogin]
@@ -29,7 +34,13 @@ namespace Interface.Controllers
             var userID = new Guid(Session["EmployeeID"].ToString());
             Employee currentUser = hrEntities.Employees.SingleOrDefault(e => e.ID == userID);
 
-            return View(currentUser.Subordinates.SelectMany(so=>so.EmployeeLeaveRequests).Where(elr=>elr.EmployeeLeaveRequestStatusChanges.Count()==0));
+            var approvals =
+                currentUser.Subordinates.SelectMany(so => so.EmployeeLeaveRequests)
+                    .Where(elr => elr.EmployeeLeaveRequestStatusChanges.Count() == 0);
+            if (approvals.Count() == 1)
+                return RedirectToAction("Application", new RouteValueDictionary { { "ID", approvals.FirstOrDefault().ID } });
+            else
+                return View(approvals);
         }
 
         [NeedsLogin]
@@ -54,7 +65,7 @@ namespace Interface.Controllers
 
         [NeedsLogin]
         [HttpPost]
-        public ActionResult Application(Guid id, int statusID, string reason)
+        public async Task<ActionResult> Application(Guid id, int statusID, string reason)
         {
             var userID = new Guid(Session["EmployeeID"].ToString());
             Employee currentUser = hrEntities.Employees.SingleOrDefault(e => e.ID == userID);
@@ -65,15 +76,35 @@ namespace Interface.Controllers
                            ((elr.Employee.Supervisor != null && elr.Employee.Supervisor.ID == currentUser.ID) ||
                             currentUser.IsAdmin));
 
+            var newStatus = hrEntities.LeaveStatuses.SingleOrDefault(ls => ls.ID == statusID);
+            var employee = employeeLeaveRequest.Employee;
             employeeLeaveRequest.EmployeeLeaveRequestStatusChanges.Add(new EmployeeLeaveRequestStatusChanx
             {
                 DateTime = DateTime.Now,
                 ChangedByEmployeeID = userID,
-                LeaveStatusID = statusID,
+                LeaveStatus = newStatus,
                 Reason = reason
             });
 
-            hrEntities.SaveChanges();
+            var saveToDB = hrEntities.SaveChangesAsync();
+
+
+            string applicationURL = @Url.Action("Application", "Leave",
+                    new RouteValueDictionary { { "ID", id } }, Request.Url.Scheme);
+
+            var notificationMessage = new MailMessage(AppSettings.DefaultMailAddress,
+                employee.GetMailAddress())
+            {
+                IsBodyHtml = true,
+                Subject = "Your leave application has been " + newStatus.Status.ToLower(),
+                Body =
+                    "<h1>" + newStatus.Status + "</h1>Your leave application has been " + newStatus.Status.ToLower() + " by " + currentUser.Name + " " + currentUser.Surname + ". You can <a href='" + applicationURL + "'>go directly to this application</a> for more details."
+            };
+
+            HostingEnvironment.QueueBackgroundWorkItem(
+                ct => AppSettings.SmtpClient.SendMailAsync(notificationMessage));
+
+            await saveToDB;
 
             return RedirectToAction("Application", new RouteValueDictionary { { "ID", id } });
         }
@@ -130,9 +161,7 @@ namespace Interface.Controllers
 
             currentUser.EmployeeLeaveRequests.Add(leaveRequest);
 
-            var tasks = new List<Task>();
-
-            tasks.Add(hrEntities.SaveChangesAsync());
+            var saveToDB = hrEntities.SaveChangesAsync();
 
             if (supervisor != null)
             {
@@ -143,17 +172,16 @@ namespace Interface.Controllers
                     supervisor.GetMailAddress())
                 {
                     IsBodyHtml = true,
-                    Subject = "New Leave Application from: " + currentUser.Name + " " + currentUser.Surname,
+                    Subject = "New Leave Application from " + currentUser.Name + " " + currentUser.Surname,
                     Body =
-                        "You have a new leave application to approve. You can visit <a href='" + approvalURL + "'>" +
-                        approvalURL + "</a> to go directly to this application"
+                        "You have a new leave application to approve. You can <a href='" + approvalURL + "'>go directly to this application</a> to approve or reject it."
                 };
 
-                tasks.Add(AppSettings.SmtpClient.SendMailAsync(supervisorMailMessage));
+                HostingEnvironment.QueueBackgroundWorkItem(
+                    ct => AppSettings.SmtpClient.SendMailAsync(supervisorMailMessage));
             }
 
-
-            await Task.WhenAll(tasks);
+            await saveToDB;
             return Json(leaveRequest.ID);
         }
     }

@@ -1,4 +1,5 @@
-﻿@model Logic.EmployeeLeaveRequest
+﻿@using Logic
+@model Logic.EmployeeLeaveRequest
 
 @{
     ViewBag.Title = Model.Employee.Name + "'s Leave Application";
@@ -9,7 +10,7 @@
     var latestChange = Model.EmployeeLeaveRequestStatusChanges.OrderByDescending(d => d.DateTime).FirstOrDefault();
 }
 
-<h2>@Model.Employee.Name's Leave Application <span class="label @(latestChange == null ? "label-warning" : latestChange.LeaveStatusID == 1 ? "label-danger" : "label-success")">@(latestChange == null ? "Pending" : latestChange.LeaveStatusID == 1 ? "Rejected" : "Approved")</span></h2>
+<h2>@Model.Employee.Name @Model.Employee.Surname <span class="label @(latestChange == null ? "label-warning" : latestChange.LeaveStatusID == 1 ? "label-danger" : "label-success")">@(latestChange == null ? "Pending" : latestChange.LeaveStatusID == 1 ? "Rejected" : "Approved")</span></h2>
 <h3>Submitted <span class="moment">@Model.DateTime.ToMomentTime()</span> for some @Model.LeaveType.Name.ToLower() leave <span class="moment">@Model.EmployeeLeaveRequestDates.OrderBy(elrd => elrd.Day).FirstOrDefault().Day.ToMomentTime()</span></h3>
 
 <div style="margin: 50px 0">
