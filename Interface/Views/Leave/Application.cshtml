@@ -17,7 +17,7 @@
             var calendar = $("#calendar").calendar(
             {
                 tmpl_path: @Url.Content("~/CalendarTemplates/"),
-                events_source: '@Url.Action("Calendar")',
+                events_source: '@Url.Action("Calendar", new RouteValueDictionary { { "leaveID", Model.ID } })',
                 day: '@Model.EmployeeLeaveRequestDates.Min(elrd => elrd.Day).ToString("yyyy-MM-dd")',
                 onAfterViewLoad: function(view) {
                     $('.page-header h3').text(this.getTitle());

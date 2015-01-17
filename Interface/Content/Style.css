@@ -22,3 +22,10 @@ blockquote.rejected {
 .leaveTable tr {
     cursor: pointer;
 }
+
+.dh-currentLeaveApplication, .currentLeaveApplication {
+    background-color: #3e8f3e;
+}
+
+.otherLeaveApplication {
+}

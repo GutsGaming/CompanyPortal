@@ -45,7 +45,7 @@ namespace Interface.Controllers
         }
 
         [NeedsLogin]
-        public ActionResult Calendar(long from, long to)
+        public ActionResult Calendar(long from, long to, Guid? leaveID)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace Interface.Controllers
                         StartDate = elr.EmployeeLeaveRequestDates.Min(elrd => elrd.Day),
                         EndDate = elr.EmployeeLeaveRequestDates.Max(elrd => elrd.Day),
                         title = elr.Employee.Name + " " + elr.Employee.Surname,
-                        _class = "123",
+                        _class = leaveID.HasValue ? (leaveID.Value == elr.ID ? "currentLeaveApplication" : "otherLeaveApplication") : "123",
                         url = elr.ID.ToString()
                     }).ToList();
 
