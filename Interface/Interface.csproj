@@ -50,7 +50,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.7\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Net.Http" />
@@ -102,9 +102,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-calendar.css" />
+    <Content Include="Content\bootstrap-calendar.min.css">
+      <DependentUpon>bootstrap-calendar.css</DependentUpon>
+    </Content>
     <Content Include="Content\datepicker3.css" />
     <Content Include="Content\datepicker3.min.css">
       <DependentUpon>datepicker3.css</DependentUpon>
+    </Content>
+    <Content Include="Images\bootstrap-calendar\dark_wood.png" />
+    <Content Include="Images\bootstrap-calendar\slide-bg.png" />
+    <Content Include="Images\bootstrap-calendar\tick.png" />
+    <Content Include="Scripts\bootstrap-calendar.js" />
+    <Content Include="Scripts\bootstrap-calendar.min.js">
+      <DependentUpon>bootstrap-calendar.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Script.js" />
     <Content Include="Content\Style.css" />
@@ -123,6 +134,15 @@
     <Content Include="Scripts\Script.min.js">
       <DependentUpon>Script.js</DependentUpon>
     </Content>
+    <Content Include="CalendarTemplates\day.html" />
+    <Content Include="CalendarTemplates\events-list.html" />
+    <Content Include="CalendarTemplates\modal.html" />
+    <Content Include="CalendarTemplates\month-day.html" />
+    <Content Include="CalendarTemplates\month.html" />
+    <Content Include="CalendarTemplates\week-days.html" />
+    <Content Include="CalendarTemplates\week.html" />
+    <Content Include="CalendarTemplates\year-month.html" />
+    <Content Include="CalendarTemplates\year.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -140,6 +160,7 @@
     </Compile>
     <Compile Include="Models\AddUserModel.cs" />
     <Compile Include="Models\BookLeaveModel.cs" />
+    <Compile Include="Models\CalendarResponseModel.cs" />
     <Compile Include="Models\GiveLeaveModel.cs" />
     <Compile Include="Models\ViewLeaveModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -169,6 +190,9 @@
       <DependentUpon>Script.min.js</DependentUpon>
     </Content>
     <Content Include="Views\Leave\Pending.cshtml" />
+    <Content Include="Scripts\bootstrap-calendar.min.js.map">
+      <DependentUpon>bootstrap-calendar.min.js</DependentUpon>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

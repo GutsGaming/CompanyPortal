@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Interface.Models;
 using Logic;
+using Newtonsoft.Json;
 
 namespace Interface.Controllers
 {
@@ -41,6 +42,39 @@ namespace Interface.Controllers
                 return RedirectToAction("Application", new RouteValueDictionary { { "ID", approvals.FirstOrDefault().ID } });
             else
                 return View(approvals);
+        }
+
+        [NeedsLogin]
+        public ActionResult Calendar(long from, long to)
+        {
+            try
+            {
+                var fromDate = from.FromUnixTime();
+                var toDate = to.FromUnixTime();
+
+                var results = hrEntities.EmployeeLeaveRequests.Where(
+                    elr => elr.EmployeeLeaveRequestDates.Any(d => d.Day >= fromDate && d.Day <= toDate))
+                    .Select(elr => new CalendarResponseModelEvent
+                    {
+                        id = elr.ID,
+                        StartDate = elr.EmployeeLeaveRequestDates.Min(elrd => elrd.Day),
+                        EndDate = elr.EmployeeLeaveRequestDates.Max(elrd => elrd.Day),
+                        title = elr.Employee.Name + " " + elr.Employee.Surname,
+                        _class = "123",
+                        url = elr.ID.ToString()
+                    }).ToList();
+
+                return Content(JsonConvert.SerializeObject(new CalendarResponseModel
+                {
+                    success = true,
+                    result = results
+                }));
+            }
+            catch (Exception e)
+            {
+
+                return Json(new CalendarResponseModel { success = false, error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         [NeedsLogin]
